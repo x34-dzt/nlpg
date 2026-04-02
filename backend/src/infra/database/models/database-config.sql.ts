@@ -3,12 +3,12 @@ import { createId } from "./id";
 import { InferSelectModel, InferInsertModel } from "drizzle-orm";
 import { userTable } from "./user.sql";
 
-export const connectionTable = pgTable(
-  "connections",
+export const databaseConfigTable = pgTable(
+  "database_configs",
   (pg) => ({
     id: varchar({ length: 34 })
       .primaryKey()
-      .$defaultFn(() => createId("conn")),
+      .$defaultFn(() => createId("dbcfg")),
 
     userId: varchar({ length: 34 })
       .notNull()
@@ -33,8 +33,10 @@ export const connectionTable = pgTable(
       .$onUpdateFn(() => new Date()),
     deletedAt: timestamp({ mode: "date", withTimezone: true }),
   }),
-  (t) => [index("connections_user_id_idx").on(t.userId)],
+  (t) => [index("database_configs_user_id_idx").on(t.userId)],
 );
 
-export type ConnectionModel = InferSelectModel<typeof connectionTable>;
-export type InsertConnectionModel = InferInsertModel<typeof connectionTable>;
+export type DatabaseConfigModel = InferSelectModel<typeof databaseConfigTable>;
+export type InsertDatabaseConfigModel = InferInsertModel<
+  typeof databaseConfigTable
+>;
