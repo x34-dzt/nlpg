@@ -1,4 +1,4 @@
-import { pgTable, varchar, jsonb, pgEnum, index } from "drizzle-orm/pg-core";
+import { pgTable, pgEnum, index } from "drizzle-orm/pg-core";
 import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
 import { baseColumns } from "../base-columns";
 import { userTable } from "../user/user.sql";
@@ -11,10 +11,12 @@ export const conversationTable = pgTable(
   "conversations",
   (pg) => ({
     ...baseColumns("conversation"),
-    createdBy: varchar({ length: 34 })
+    createdBy: pg
+      .varchar({ length: 34 })
       .notNull()
       .references(() => userTable.id, { onDelete: "cascade" }),
-    databaseConfigId: varchar({ length: 34 })
+    databaseConfigId: pg
+      .varchar({ length: 34 })
       .notNull()
       .references(() => databaseConfigTable.id, { onDelete: "cascade" }),
     lastUsedAt: pg.timestamp({ mode: "date", withTimezone: true }),
@@ -30,8 +32,9 @@ export const messageTable = pgTable(
   (pg) => ({
     ...baseColumns("message"),
     role: messageRoleEnum().notNull().default("user"),
-    content: jsonb("message_content").notNull(),
-    conversationId: varchar({ length: 34 })
+    content: pg.jsonb().$type<AiSdkMessage>().notNull(),
+    conversationId: pg
+      .varchar({ length: 34 })
       .notNull()
       .references(() => conversationTable.id, { onDelete: "cascade" }),
   }),

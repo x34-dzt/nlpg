@@ -1,4 +1,4 @@
-import { pgTable, varchar } from "drizzle-orm/pg-core";
+import { pgTable } from "drizzle-orm/pg-core";
 import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
 import { baseColumns } from "../base-columns";
 

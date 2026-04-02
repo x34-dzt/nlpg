@@ -1,11 +1,11 @@
 import Elysia from "elysia";
 import { cors } from "@elysiajs/cors";
 import swagger from "@elysiajs/swagger";
-import { userRoutes } from "./services/user/routes";
-import { databaseConfigRoutes } from "./services/database-config/routes";
-import { chatRoutes } from "./services/chat/routes";
-import { errorHandler } from "./error-handler";
 import { isDev } from "~/lib/constants";
+import { errorHandler } from "./error-handler";
+import { userRoutes } from "./domains/user/routes";
+import { databaseConfigRoutes } from "./domains/database-config/routes";
+import { chatRoutes } from "./domains/chat/routes";
 
 const port = Number(process.env.PORT) || 3000;
 const allowedOrigin = process.env.ALLOWED_ORIGIN ?? "http://localhost:5173";
