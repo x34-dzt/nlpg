@@ -1,8 +1,7 @@
 import { pgTable, pgEnum, index } from "drizzle-orm/pg-core";
-import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
 import { baseColumns } from "../base-columns";
 import { userTable } from "../user/user.sql";
-import { databaseConfigTable } from "../database-config/database-config.sql";
+import { connectionTable } from "../connections/connections.sql";
 import type { AiSdkMessage } from "./message.types";
 
 export const messageRoleEnum = pgEnum("message_role", ["user", "assistant"]);
@@ -15,15 +14,15 @@ export const conversationTable = pgTable(
       .varchar({ length: 34 })
       .notNull()
       .references(() => userTable.id, { onDelete: "cascade" }),
-    databaseConfigId: pg
+    connectionId: pg
       .varchar({ length: 34 })
       .notNull()
-      .references(() => databaseConfigTable.id, { onDelete: "cascade" }),
+      .references(() => connectionTable.id, { onDelete: "cascade" }),
     lastUsedAt: pg.timestamp({ mode: "date", withTimezone: true }),
   }),
   (t) => [
     index("conversations_created_by_idx").on(t.createdBy),
-    index("conversations_database_config_id_idx").on(t.databaseConfigId),
+    index("conversations_connection_id_idx").on(t.connectionId),
   ],
 );
 
@@ -41,7 +40,4 @@ export const messageTable = pgTable(
   (t) => [index("messages_conversation_id_idx").on(t.conversationId)],
 );
 
-export type ConversationModel = InferSelectModel<typeof conversationTable>;
-export type ConversationCreate = InferInsertModel<typeof conversationTable>;
-export type MessageModel = InferSelectModel<typeof messageTable>;
-export type MessageCreate = InferInsertModel<typeof messageTable>;
+

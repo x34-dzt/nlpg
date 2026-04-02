@@ -1,12 +1,11 @@
 import { pgTable, index } from "drizzle-orm/pg-core";
-import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
 import { baseColumns } from "../base-columns";
 import { userTable } from "../user/user.sql";
 
-export const databaseConfigTable = pgTable(
-  "database_configs",
+export const connectionTable = pgTable(
+  "connections",
   (pg) => ({
-    ...baseColumns("databaseConfig"),
+    ...baseColumns("connection"),
     userId: pg
       .varchar({ length: 34 })
       .notNull()
@@ -20,8 +19,7 @@ export const databaseConfigTable = pgTable(
     ssl: pg.boolean().notNull().default(false),
     lastUsedAt: pg.timestamp({ mode: "date", withTimezone: true }),
   }),
-  (t) => [index("database_configs_user_id_idx").on(t.userId)],
+  (t) => [index("connections_user_id_idx").on(t.userId)],
 );
 
-export type DatabaseConfigModel = InferSelectModel<typeof databaseConfigTable>;
-export type DatabaseConfigCreate = InferInsertModel<typeof databaseConfigTable>;
+

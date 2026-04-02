@@ -2,7 +2,7 @@ import { ulid } from "ulid";
 
 export const type = {
   user: "usr",
-  databaseConfig: "dbcfg",
+  connection: "cnct",
   conversation: "conn",
   message: "msg",
 } as const;
