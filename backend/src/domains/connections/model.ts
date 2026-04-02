@@ -1,9 +1,9 @@
 import type { Static } from "elysia";
 import { t } from "elysia";
 import { createSelectSchema } from "drizzle-typebox";
-import { databaseConfigTable } from "@db/database-config";
+import { connectionTable } from "@db/connections/connections.sql";
 
-export const createDatabaseConfigSchema = t.Object({
+export const createConnectionSchema = t.Object({
   displayName: t.String({ minLength: 1, maxLength: 100 }),
   host: t.String({ minLength: 1, maxLength: 255 }),
   port: t.Optional(t.Number({ minimum: 1, maximum: 65535 })),
@@ -13,9 +13,9 @@ export const createDatabaseConfigSchema = t.Object({
   ssl: t.Optional(t.Boolean()),
 });
 
-const databaseConfigSelectSchema = createSelectSchema(databaseConfigTable);
+const connectionSelectSchema = createSelectSchema(connectionTable);
 
-export const databaseConfigResponseSchema = t.Omit(databaseConfigSelectSchema, [
+export const connectionResponseSchema = t.Omit(connectionSelectSchema, [
   "password",
   "deletedAt",
 ]);
@@ -25,19 +25,15 @@ export const paginationQuerySchema = t.Object({
   limit: t.Optional(t.Number({ minimum: 1, maximum: 100 })),
 });
 
-export const paginatedDatabaseConfigResponseSchema = t.Object({
-  items: t.Array(databaseConfigResponseSchema),
+export const paginatedConnectionResponseSchema = t.Object({
+  items: t.Array(connectionResponseSchema),
   nextCursor: t.Nullable(t.String()),
   hasMore: t.Boolean(),
 });
 
-export type CreateDatabaseConfigSchema = Static<
-  typeof createDatabaseConfigSchema
->;
-export type DatabaseConfigResponse = Static<
-  typeof databaseConfigResponseSchema
->;
+export type CreateConnectionSchema = Static<typeof createConnectionSchema>;
+export type ConnectionResponse = Static<typeof connectionResponseSchema>;
 export type PaginationQuery = Static<typeof paginationQuerySchema>;
-export type PaginatedDatabaseConfigResponse = Static<
-  typeof paginatedDatabaseConfigResponseSchema
+export type PaginatedConnectionResponse = Static<
+  typeof paginatedConnectionResponseSchema
 >;

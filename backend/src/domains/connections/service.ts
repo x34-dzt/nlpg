@@ -1,38 +1,38 @@
-import { DatabaseConfigRepo } from "./repo";
+import { Connection } from "@db/connections/connections";
 import type {
-  CreateDatabaseConfigSchema,
-  DatabaseConfigResponse,
+  CreateConnectionSchema,
+  ConnectionResponse,
   PaginationQuery,
-  PaginatedDatabaseConfigResponse,
+  PaginatedConnectionResponse,
 } from "./model";
 
 const DEFAULT_LIMIT = 50;
 
-class DatabaseConfigService {
+class ConnectionService {
   static async create(
-    body: CreateDatabaseConfigSchema,
+    body: CreateConnectionSchema,
     userId: string,
-  ): Promise<DatabaseConfigResponse> {
-    const config = await DatabaseConfigRepo.create({
+  ): Promise<ConnectionResponse> {
+    const connection = await Connection.create({
       ...body,
       port: body.port ?? 5432,
       ssl: body.ssl ?? false,
       userId,
     });
 
-    if (!config) {
-      throw new Error("Failed to create database config");
+    if (!connection) {
+      throw new Error("Failed to create connection");
     }
 
-    return config;
+    return connection;
   }
 
   static async findAll(
     userId: string,
     query: PaginationQuery,
-  ): Promise<PaginatedDatabaseConfigResponse> {
+  ): Promise<PaginatedConnectionResponse> {
     const limit = query.limit ?? DEFAULT_LIMIT;
-    const results = await DatabaseConfigRepo.findManyByUserId(
+    const results = await Connection.findManyByUserId(
       userId,
       query.cursor,
       limit,
@@ -49,4 +49,4 @@ class DatabaseConfigService {
   }
 }
 
-export { DatabaseConfigService };
+export { ConnectionService };

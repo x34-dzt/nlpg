@@ -1,10 +1,10 @@
 import bearer from "@elysiajs/bearer";
 import Elysia from "elysia";
 import { JWT } from "~/lib/jwt";
-import type { UserModel } from "@db/user";
+import type { UserModel } from "@db/user/user";
 import { UnauthorizedError } from "~/lib/error";
 import { db, eq } from "@db";
-import { userTable } from "@db/user";
+import { userTable } from "@db/user/user.sql";
 
 export const authGuard = new Elysia({ name: "auth" })
   .use(bearer())

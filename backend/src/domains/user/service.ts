@@ -1,5 +1,5 @@
 import { JWT } from "~/lib/jwt";
-import { UserRepo } from "./repo";
+import { User } from "@db/user/user";
 import { ConflictError, UnauthorizedError } from "~/lib/error";
 import type { AuthResponse } from "./model";
 
@@ -8,14 +8,14 @@ class UserService {
     username: string;
     password: string;
   }): Promise<AuthResponse> {
-    const existing = await UserRepo.findByUsername(body.username);
+    const existing = await User.findByUsername(body.username);
     if (existing) {
       throw new ConflictError("Username already exists");
     }
 
     const hashedPassword = await Bun.password.hash(body.password);
 
-    const user = await UserRepo.create({
+    const user = await User.create({
       username: body.username,
       password: hashedPassword,
     });
@@ -36,7 +36,7 @@ class UserService {
     username: string;
     password: string;
   }): Promise<AuthResponse> {
-    const user = await UserRepo.findByUsername(body.username);
+    const user = await User.findByUsername(body.username);
 
     const DUMMY_HASH =
       "$argon2id$v=19$m=65536,t=2,p=1$l8fzfmtbxDhqFp0wB+xk+mGB5lpoa8unF5+6/MCz2Ew$k+1oOfhtFRwWxcG2SEGIyqsVxetcbIQ/1TlJ2qYG8k4";
