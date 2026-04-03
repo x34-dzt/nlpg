@@ -1,3 +1,3 @@
-export { authGuard } from "./auth";
-export { ownsConnectionGuard } from "./owns-connection";
-export { ownsConversationGuard } from "./owns-conversation";
+export { useAuthGuard } from "./auth";
+export { useConversationGuard } from "./conversation";
+export { useConnectionGuard } from "./connection";

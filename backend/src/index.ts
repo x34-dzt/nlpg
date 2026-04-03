@@ -9,12 +9,14 @@ import { conversationRoutes } from "./domains/conversations/routes";
 import { messageRoutes } from "./domains/conversations/messages/routes";
 
 const port = Number(process.env.PORT) || 3000;
-const allowedOrigin = process.env.ALLOWED_ORIGIN ?? "http://localhost:5173";
+const allowedOrigin = process.env.ALLOWED_ORIGIN ?? "http://localhost:3000";
 
 function buildApp() {
+  console.log("[App] Building Elysia app...");
   const app = new Elysia();
 
   if (isDev) {
+    console.log("[App] Dev mode — enabling Swagger at /docs");
     app.use(
       swagger({
         path: "/docs",
@@ -30,7 +32,7 @@ function buildApp() {
       cors({
         origin: allowedOrigin,
         credentials: true,
-        allowedHeaders: ["Content-Type", "Authorization"],
+        allowedHeaders: ["Content-Type", "Authorization", "X-AI-API-Key"],
         methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
       }),
     )
@@ -43,10 +45,7 @@ function buildApp() {
 
 const elysia = buildApp();
 
-elysia.get("/health", { message: "healthy" });
 elysia.listen(port, () => {
-  console.log(`
- Server running on port ${port}
- Docs: http://localhost:${port}/docs
-`);
+  if (isDev) console.log(`[App] Docs: http://localhost:${port}/docs`);
+  console.log("[App] Ready to accept requests.\n");
 });

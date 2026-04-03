@@ -1,10 +1,10 @@
 import Elysia from "elysia";
-import { authGuard, ownsConversationGuard } from "~/guard";
+import { useAuthGuard, useConversationGuard } from "~/guard";
 import { MessageService } from "./service";
 import {
-  conversationParams,
   paginationQuerySchema,
   paginatedMessageResponseSchema,
+  createMessageRequest,
 } from "./model";
 import { HttpStatus } from "~/lib/http";
 
@@ -13,19 +13,30 @@ export const messageRoutes = new Elysia({
   detail: { tags: ["messages"] },
 })
   .decorate("service", { message: MessageService })
-  .use(authGuard)
-  .use(ownsConversationGuard)
+  .use(useAuthGuard)
+  .use(useConversationGuard)
   .get(
     "/",
     async ({ params, query, service }) =>
       service.message.getMessages(params.id, query),
     {
-      isAuth: true,
+      useAuthGuard: true,
       ownsConversation: true,
-      params: conversationParams,
       query: paginationQuerySchema,
       response: {
         [HttpStatus.HTTP_200_OK]: paginatedMessageResponseSchema,
       },
+    },
+  )
+  .post(
+    "/",
+    async ({ body, headers, service, conversation }) => {
+      const apiKey = headers["x-ai-api-key"] as string | undefined;
+      service.message.chat(conversation, body.content, apiKey);
+    },
+    {
+      useAuthGuard: true,
+      useConversationGuard: true,
+      body: createMessageRequest,
     },
   );

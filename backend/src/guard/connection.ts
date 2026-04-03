@@ -1,19 +1,19 @@
 import Elysia, { t } from "elysia";
 import { Connection } from "@db/connections/connections";
-import { authGuard } from "./auth";
+import { useAuthGuard } from "./auth";
 import { ForbiddenError } from "~/lib/error";
 
-export const ownsConnectionGuard = new Elysia({
-  name: "ownsConnection",
+export const useConnectionGuard = new Elysia({
+  name: "useConnectionGuard",
 })
-  .use(authGuard)
+  .use(useAuthGuard)
   .guard({
     params: t.Object({
       connectionId: t.String(),
     }),
   })
-  .macro("ownsConnection", {
-    isAuth: true,
+  .macro("useConnectionGuard", {
+    useAuthGuard: true,
     async resolve({ params, user }) {
       const connection = await Connection.findByIdAndUserId(
         params.connectionId,

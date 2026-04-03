@@ -6,9 +6,9 @@ import { UnauthorizedError } from "~/lib/error";
 import { db, eq } from "@db";
 import { userTable } from "@db/user/user.sql";
 
-export const authGuard = new Elysia({ name: "auth" })
+export const useAuthGuard = new Elysia({ name: "useAuthGuard" })
   .use(bearer())
-  .macro("isAuth", {
+  .macro("useAuthGuard", {
     async resolve({ bearer }): Promise<{ user: UserModel }> {
       if (!bearer) throw new UnauthorizedError("Missing auth token");
 

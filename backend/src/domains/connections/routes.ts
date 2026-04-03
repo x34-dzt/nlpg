@@ -1,11 +1,12 @@
 import Elysia from "elysia";
-import { authGuard } from "~/guard";
+import { useAuthGuard, useConnectionGuard } from "~/guard";
 import { ConnectionService } from "./service";
 import {
   createConnectionSchema,
   paginationQuerySchema,
   connectionResponseSchema,
   paginatedConnectionResponseSchema,
+  healthResponseSchema,
 } from "./model";
 import { HttpStatus } from "~/lib/http";
 
@@ -16,28 +17,62 @@ export const connectionRoutes = new Elysia({
   .decorate("service", {
     connection: ConnectionService,
   })
-  .use(authGuard)
+  .use(useAuthGuard)
+  .get(
+    "/",
+    async ({ user, query, service }) =>
+      service.connection.findAll(user.id, query),
+    {
+      useAuthGuard: true,
+      query: paginationQuerySchema,
+      response: {
+        [HttpStatus.HTTP_200_OK]: paginatedConnectionResponseSchema,
+      },
+    },
+  )
   .post(
     "/",
-    async ({ body, user, service }) =>
-      service.connection.create(body, user.id),
+    async ({ body, user, service }) => service.connection.create(body, user.id),
     {
-      isAuth: true,
+      useAuthGuard: true,
       body: createConnectionSchema,
       response: {
         [HttpStatus.HTTP_201_CREATED]: connectionResponseSchema,
       },
     },
   )
+  .use(useConnectionGuard)
   .get(
-    "/",
-    async ({ user, query, service }) =>
-      service.connection.findAll(user.id, query),
+    "/:connectionId",
+    async ({ params, user, service }) =>
+      service.connection.findById(params.connectionId, user.id),
     {
-      isAuth: true,
-      query: paginationQuerySchema,
+      useAuthGuard: true,
+      useConnectionGuard: true,
       response: {
-        [HttpStatus.HTTP_200_OK]: paginatedConnectionResponseSchema,
+        [HttpStatus.HTTP_200_OK]: connectionResponseSchema,
       },
+    },
+  )
+  .get(
+    "/:connectionId/health",
+    async ({ params, user, service }) =>
+      service.connection.healthCheck(params.connectionId, user.id),
+    {
+      useAuthGuard: true,
+      useConnectionGuard: true,
+      response: {
+        [HttpStatus.HTTP_200_OK]: healthResponseSchema,
+      },
+    },
+  )
+  .delete(
+    "/:connectionId",
+    async ({ params, user, service }) => {
+      await service.connection.remove(params.connectionId, user.id);
+    },
+    {
+      useAuthGuard: true,
+      useConnectionGuard: true,
     },
   );
