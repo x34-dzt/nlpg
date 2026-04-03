@@ -31,6 +31,11 @@ export const paginatedConnectionResponseSchema = t.Object({
   hasMore: t.Boolean(),
 });
 
+export const healthResponseSchema = t.Object({
+  status: t.String(),
+  message: t.Optional(t.String()),
+});
+
 export type CreateConnectionSchema = Static<typeof createConnectionSchema>;
 export type ConnectionResponse = Static<typeof connectionResponseSchema>;
 export type PaginationQuery = Static<typeof paginationQuerySchema>;

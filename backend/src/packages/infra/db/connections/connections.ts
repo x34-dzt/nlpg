@@ -71,4 +71,11 @@ export class Connection {
       );
     return connection ?? null;
   }
+
+  static async softDelete(id: string): Promise<void> {
+    await db
+      .update(connectionTable)
+      .set({ deletedAt: new Date() })
+      .where(eq(connectionTable.id, id));
+  }
 }
