@@ -1,5 +1,5 @@
-import { PaginatedResponse, Connection } from "../../interfaces/connections"
-import api from "../client"
+import { PaginatedResponse, Connection } from "@/interfaces/connections"
+import api from "@/api/client"
 
 export async function listConnections(
   cursor?: string,

@@ -1,5 +1,5 @@
-import { Conversation } from "../../interfaces/conversations"
-import api from "../client"
+import { Conversation } from "@/interfaces/conversations"
+import api from "@/api/client"
 
 export async function createConversation(
   connectionId: string

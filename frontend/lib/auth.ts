@@ -7,6 +7,7 @@ export function getToken(): string | null {
 }
 
 export function setToken(token: string): void {
+  if (typeof window === "undefined") return
   localStorage.setItem(TOKEN_KEY, token)
 }
 
@@ -22,10 +23,12 @@ export function getUser(): { id: string; username: string } | null {
 }
 
 export function setUser(user: { id: string; username: string }): void {
+  if (typeof window === "undefined") return
   localStorage.setItem(USER_KEY, JSON.stringify(user))
 }
 
 export function removeToken(): void {
+  if (typeof window === "undefined") return
   localStorage.removeItem(TOKEN_KEY)
   localStorage.removeItem(USER_KEY)
 }

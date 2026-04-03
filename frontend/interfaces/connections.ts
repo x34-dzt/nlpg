@@ -22,8 +22,9 @@ export interface CreateConnectionRequest {
   ssl?: boolean
 }
 
-export interface PaginatedResponse<T> {
-  items: T[]
-  nextCursor: string | null
-  hasMore: boolean
+export interface HealthResponse {
+  status: string
+  message?: string
 }
+
+export type { PaginatedResponse } from "@/interfaces/pagination"

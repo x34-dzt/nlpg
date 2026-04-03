@@ -1,9 +1,5 @@
-import api from "../client"
-
-interface HealthResponse {
-  status: string
-  message?: string
-}
+import api from "@/api/client"
+import type { HealthResponse } from "@/interfaces/connections"
 
 export async function healthCheck(
   connectionId: string
