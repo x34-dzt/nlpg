@@ -1,6 +1,6 @@
 import { JWT } from "~/lib/jwt";
 import { User } from "@db/user/user";
-import { ConflictError, UnauthorizedError } from "~/lib/error";
+import { ConflictError, NotFoundError, UnauthorizedError } from "~/lib/error";
 import type { AuthResponse } from "./model";
 
 class UserService {
@@ -37,11 +37,11 @@ class UserService {
     password: string;
   }): Promise<AuthResponse> {
     const user = await User.findByUsername(body.username);
+    if (!user) {
+      throw new NotFoundError("user not found");
+    }
 
-    const DUMMY_HASH =
-      "$argon2id$v=19$m=65536,t=2,p=1$l8fzfmtbxDhqFp0wB+xk+mGB5lpoa8unF5+6/MCz2Ew$k+1oOfhtFRwWxcG2SEGIyqsVxetcbIQ/1TlJ2qYG8k4";
-
-    const hashToVerify = user?.password ?? DUMMY_HASH;
+    const hashToVerify = user.password;
     const isValid = await Bun.password.verify(body.password, hashToVerify);
 
     if (!user || !isValid) {
