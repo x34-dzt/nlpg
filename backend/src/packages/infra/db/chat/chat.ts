@@ -1,4 +1,4 @@
-import { db, eq, lt, desc, and, isNull } from "@db";
+import { db, eq, lt, desc, asc, and, isNull } from "@db";
 import {
   conversationTable,
   messageTable,
@@ -61,6 +61,42 @@ export class Chat {
       .limit(limit + 1);
   }
 
+  static async createMessage(data: {
+    id: string;
+    role: "user" | "assistant";
+    content: unknown;
+    conversationId: string;
+  }): Promise<void> {
+    await db.insert(messageTable).values({
+      id: data.id,
+      role: data.role,
+      content: data.content,
+      conversationId: data.conversationId,
+    });
+  }
+
+  static async updateLastUsedAt(conversationId: string): Promise<void> {
+    await db
+      .update(conversationTable)
+      .set({ lastUsedAt: new Date() })
+      .where(eq(conversationTable.id, conversationId));
+  }
+
+  static async findMessagesAsc(
+    conversationId: string,
+  ): Promise<MessageModel[]> {
+    return db
+      .select()
+      .from(messageTable)
+      .where(
+        and(
+          eq(messageTable.conversationId, conversationId),
+          isNull(messageTable.deletedAt),
+        ),
+      )
+      .orderBy(asc(messageTable.createdAt));
+  }
+
   static async findMessages(
     conversationId: string,
     cursor: string | undefined,
@@ -81,5 +117,12 @@ export class Chat {
       .where(and(...conditions))
       .orderBy(desc(messageTable.id))
       .limit(limit + 1);
+  }
+
+  static async softDeleteConversation(conversationId: string): Promise<void> {
+    await db
+      .update(conversationTable)
+      .set({ deletedAt: new Date() })
+      .where(eq(conversationTable.id, conversationId));
   }
 }

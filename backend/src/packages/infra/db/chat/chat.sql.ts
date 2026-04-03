@@ -2,7 +2,6 @@ import { pgTable, pgEnum, index } from "drizzle-orm/pg-core";
 import { baseColumns } from "../base-columns";
 import { userTable } from "../user/user.sql";
 import { connectionTable } from "../connections/connections.sql";
-import type { AiSdkMessage } from "./message.types";
 
 export const messageRoleEnum = pgEnum("message_role", ["user", "assistant"]);
 
@@ -31,7 +30,7 @@ export const messageTable = pgTable(
   (pg) => ({
     ...baseColumns("message"),
     role: messageRoleEnum().notNull().default("user"),
-    content: pg.jsonb().$type<AiSdkMessage>().notNull(),
+    content: pg.jsonb().notNull(),
     conversationId: pg
       .varchar({ length: 34 })
       .notNull()
@@ -39,5 +38,3 @@ export const messageTable = pgTable(
   }),
   (t) => [index("messages_conversation_id_idx").on(t.conversationId)],
 );
-
-

@@ -5,8 +5,8 @@ import { messageTable } from "@db/chat/chat.sql";
 
 const messageSelectSchema = createSelectSchema(messageTable);
 
-export const conversationParams = t.Object({
-  id: t.String(),
+export const createMessageRequest = t.Object({
+  content: t.String({ minLength: 1, maxLength: 10000 }),
 });
 
 export const paginationQuerySchema = t.Object({
@@ -14,9 +14,7 @@ export const paginationQuerySchema = t.Object({
   limit: t.Optional(t.Number({ minimum: 1, maximum: 100 })),
 });
 
-export const messageResponseSchema = t.Omit(messageSelectSchema, [
-  "deletedAt",
-]);
+export const messageResponseSchema = t.Omit(messageSelectSchema, ["deletedAt"]);
 
 export const paginatedMessageResponseSchema = t.Object({
   items: t.Array(messageResponseSchema),
@@ -24,6 +22,7 @@ export const paginatedMessageResponseSchema = t.Object({
   hasMore: t.Boolean(),
 });
 
+export type CreateMessageRequest = Static<typeof createMessageRequest>;
 export type PaginationQuery = Static<typeof paginationQuerySchema>;
 export type MessageResponse = Static<typeof messageResponseSchema>;
 export type PaginatedMessageResponse = Static<

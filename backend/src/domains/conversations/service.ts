@@ -4,6 +4,7 @@ import type {
   PaginationQuery,
   PaginatedConversationResponse,
 } from "./model";
+import { InternalServerError } from "../../lib/error";
 
 const DEFAULT_LIMIT = 50;
 
@@ -42,6 +43,17 @@ class ConversationService {
       items,
       nextCursor: hasMore ? (items[items.length - 1]?.id ?? null) : null,
       hasMore,
+    };
+  }
+
+  static async remove(conversationId: string): Promise<{ message: string }> {
+    try {
+      await Chat.softDeleteConversation(conversationId);
+    } catch (error) {
+      throw new InternalServerError("failed to delete the conversation");
+    }
+    return {
+      message: "deleted successfully",
     };
   }
 }
