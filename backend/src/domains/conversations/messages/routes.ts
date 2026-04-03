@@ -32,7 +32,7 @@ export const messageRoutes = new Elysia({
     "/",
     async ({ body, headers, service, conversation }) => {
       const apiKey = headers["x-ai-api-key"] as string | undefined;
-      service.message.chat(conversation, body.content, apiKey);
+      return service.message.chat(conversation, body.content, apiKey);
     },
     {
       useAuthGuard: true,
