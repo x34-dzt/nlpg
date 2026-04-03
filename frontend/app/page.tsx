@@ -1,38 +1,23 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import { getToken } from "@/lib/auth"
 import { useConnections } from "@/hooks/connections"
-import { Navbar } from "@/components/navbar"
-import { ConnectionCard } from "@/components/connection-card"
-import { AddConnectionDialog } from "@/components/add-connection-dialog"
-import { Input } from "@/components/ui/input"
+import { useRequireAuth } from "@/hooks/use-require-auth"
+import { Navbar } from "@/components/layout/navbar"
+import { ConnectionCard } from "@/components/connections/connection-card"
+import { AddConnectionDialog } from "@/components/connections/add-connection-dialog"
 import { Loader2 } from "lucide-react"
 
 export default function ConnectionsPage() {
-  const router = useRouter()
-  const [mounted, setMounted] = useState(false)
+  const isReady = useRequireAuth()
   const { data, isLoading, isError } = useConnections()
 
-  useEffect(() => {
-    setMounted(true) // eslint-disable-line react-hooks/set-state-in-effect
-  }, [])
-
-  useEffect(() => {
-    if (mounted && !getToken()) router.replace("/login")
-  }, [router, mounted])
-
-  if (!mounted) {
+  if (!isReady) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
         <Loader2 size={20} className="animate-spin text-muted-foreground" />
       </div>
     )
   }
-
-  const token = getToken()
-  if (!token) return null
 
   const connections = data?.pages.flatMap((p) => p.items) ?? []
 
@@ -41,11 +26,6 @@ export default function ConnectionsPage() {
       <Navbar />
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
         <div className="mb-6 flex items-center justify-between gap-4">
-          <Input
-            placeholder="Search databases..."
-            className="max-w-xs"
-            disabled
-          />
           <AddConnectionDialog />
         </div>
 

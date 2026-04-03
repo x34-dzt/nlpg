@@ -1,24 +1,18 @@
 "use client"
 
-import { useConversations, useCreateConversation, useDeleteConversation } from "@/hooks/conversations"
+import { useState } from "react"
+import {
+  useConversations,
+  useCreateConversation,
+  useDeleteConversation,
+} from "@/hooks/conversations"
 import { useConversationStore } from "@/stores/conversation"
+import { extractErrorMessage } from "@/lib/api-error"
+import { relativeTime } from "@/lib/time"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Plus, Loader2, MessageSquare, Clock, Trash2 } from "lucide-react"
 import { toast } from "sonner"
-import { AxiosError } from "axios"
-
-function relativeTime(date: string | null): string {
-  if (!date) return "Never"
-  const diff = Date.now() - new Date(date).getTime()
-  const mins = Math.floor(diff / 60000)
-  if (mins < 1) return "Just now"
-  if (mins < 60) return `${mins}m ago`
-  const hours = Math.floor(mins / 60)
-  if (hours < 24) return `${hours}h ago`
-  const days = Math.floor(hours / 24)
-  return `${days}d ago`
-}
 
 export function ConversationSidebar({
   connectionId,
@@ -29,8 +23,8 @@ export function ConversationSidebar({
     useConversations(connectionId)
   const { mutate: create, isPending: isCreating } =
     useCreateConversation(connectionId)
-  const { mutate: deleteConv, isPending: isDeleting } =
-    useDeleteConversation(connectionId)
+  const { mutate: deleteConv } = useDeleteConversation(connectionId)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
   const { selectedConversationId, setSelectedConversationId } =
     useConversationStore()
 
@@ -42,26 +36,26 @@ export function ConversationSidebar({
         setSelectedConversationId(conv.id)
       },
       onError: (error) => {
-        const err = error as AxiosError<{ message: string | string[] }>
-        const msg = err.response?.data?.message
-        const display = Array.isArray(msg)
-          ? msg.join(", ")
-          : msg || "Something went wrong"
-        toast.error(display)
+        toast.error(extractErrorMessage(error))
       },
     })
   }
 
   function handleDelete(e: React.MouseEvent, conversationId: string) {
     e.stopPropagation()
+    setDeletingId(conversationId)
     deleteConv(conversationId, {
       onSuccess: () => {
         if (selectedConversationId === conversationId) {
           setSelectedConversationId(null)
         }
         toast.success("Conversation deleted")
+        setDeletingId(null)
       },
-      onError: () => toast.error("Failed to delete conversation"),
+      onError: () => {
+        toast.error("Failed to delete conversation")
+        setDeletingId(null)
+      },
     })
   }
 
@@ -141,8 +135,8 @@ export function ConversationSidebar({
                   </div>
                   <button
                     onClick={(e) => handleDelete(e, conv.id)}
-                    className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded text-muted-foreground opacity-0 transition-opacity hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
-                    disabled={isDeleting}
+                    className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive"
+                    disabled={deletingId === conv.id}
                   >
                     <Trash2 size={11} />
                   </button>

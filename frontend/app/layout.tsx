@@ -1,8 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google"
 
 import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
-import { Providers } from "@/components/providers"
+import { ThemeProvider } from "@/components/layout/theme-provider"
+import { Providers } from "@/components/layout/providers"
 import { Toaster } from "sonner"
 import { cn } from "@/lib/utils"
 

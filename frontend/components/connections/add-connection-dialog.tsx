@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { useCreateConnection } from "@/hooks/connections"
+import { extractErrorMessage } from "@/lib/api-error"
+import { parseConnectionString } from "@/lib/connection-string"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -19,7 +21,6 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Field, FieldGroup } from "@/components/ui/field"
 import { Plus } from "lucide-react"
 import { toast } from "sonner"
-import { AxiosError } from "axios"
 
 export function AddConnectionDialog() {
   const [open, setOpen] = useState(false)
@@ -35,30 +36,6 @@ export function AddConnectionDialog() {
     ssl: false,
   })
 
-  function parseConnectionString(input: string): boolean {
-    try {
-      const url = new URL(input)
-      setForm((prev) => ({
-        ...prev,
-        host: url.hostname || prev.host,
-        port: url.port || prev.port,
-        database: url.pathname.slice(1) || prev.database,
-        username: url.username
-          ? decodeURIComponent(url.username)
-          : prev.username,
-        password: url.password
-          ? decodeURIComponent(url.password)
-          : prev.password,
-        ssl:
-          url.searchParams.has("sslmode") &&
-          url.searchParams.get("sslmode") !== "disable",
-      }))
-      return true
-    } catch {
-      return false
-    }
-  }
-
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     create(
@@ -70,7 +47,7 @@ export function AddConnectionDialog() {
         onSuccess: () => {
           toast.success("Connection created")
           setOpen(false)
-          setConnectionString("") // ✅ reset connection string on success
+          setConnectionString("")
           setForm({
             displayName: "",
             host: "",
@@ -82,12 +59,7 @@ export function AddConnectionDialog() {
           })
         },
         onError: (error) => {
-          const err = error as AxiosError<{ message: string | string[] }>
-          const msg = err.response?.data?.message
-          const display = Array.isArray(msg)
-            ? msg.join(", ")
-            : msg || "Something went wrong"
-          toast.error(display)
+          toast.error(extractErrorMessage(error))
         },
       }
     )
@@ -126,10 +98,9 @@ export function AddConnectionDialog() {
                     const pasted = e.clipboardData.getData("text").trim()
                     if (pasted) {
                       setTimeout(() => {
-                        if (parseConnectionString(pasted)) {
-                          // ✅ removed setConnectionString("") — field stays populated
-                          toast.success("Connection details auto-filled")
-                        }
+                        const parsed = parseConnectionString(pasted, form)
+                        setForm((prev) => ({ ...prev, ...parsed }))
+                        toast.success("Connection details auto-filled")
                       }, 0)
                     }
                   }}

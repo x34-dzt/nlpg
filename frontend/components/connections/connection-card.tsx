@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import type { Connection } from "@/interfaces/connections"
+import { relativeTime } from "@/lib/time"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -22,22 +23,8 @@ import {
   Loader2,
 } from "lucide-react"
 import { toast } from "sonner"
-import { useRouter } from "next/navigation"
-
-function relativeTime(date: string | null): string {
-  if (!date) return "Not used yet"
-  const diff = Date.now() - new Date(date).getTime()
-  const mins = Math.floor(diff / 60000)
-  if (mins < 1) return "Just now"
-  if (mins < 60) return `${mins}m ago`
-  const hours = Math.floor(mins / 60)
-  if (hours < 24) return `${hours}h ago`
-  const days = Math.floor(hours / 24)
-  return `${days}d ago`
-}
 
 export function ConnectionCard({ connection }: { connection: Connection }) {
-  const router = useRouter()
   const { mutate: deleteConn, isPending: isDeleting } = useDeleteConnection()
   const { mutate: checkHealth, isPending: isChecking } = useConnectionHealth()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -48,7 +35,6 @@ export function ConnectionCard({ connection }: { connection: Connection }) {
     deleteConn(connection.id, {
       onSuccess: () => {
         toast.success("Connection deleted")
-        router.refresh()
       },
       onError: () => toast.error("Failed to delete connection"),
     })
@@ -131,7 +117,10 @@ export function ConnectionCard({ connection }: { connection: Connection }) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <Clock size={11} />
-              <span>{relativeTime(connection.lastUsedAt)}</span>
+              <span>
+                {" "}
+                {relativeTime(connection.lastUsedAt, "Not used yet")}
+              </span>
             </div>
             <Badge variant={"secondary"} className="h-5 px-1.5 text-[10px]">
               {connection.ssl ? "SSL on" : "SSL off"}

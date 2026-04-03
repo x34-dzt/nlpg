@@ -1,29 +1,19 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useRouter, useParams } from "next/navigation"
-import { getToken } from "@/lib/auth"
-import { Navbar } from "@/components/navbar"
-import { ConversationSidebar } from "@/components/conversation-sidebar"
-import { ChatPanel } from "@/components/chat-panel"
+import { useEffect } from "react"
+import { useParams } from "next/navigation"
+import { useRequireAuth } from "@/hooks/use-require-auth"
+import { Navbar } from "@/components/layout/navbar"
+import { ConversationSidebar } from "@/components/conversations/conversation-sidebar"
+import { ChatPanel } from "@/components/chat/panel"
 import { useConversationStore } from "@/stores/conversation"
 import { Construction, Loader2 } from "lucide-react"
 
 export default function ConnectionPage() {
-  const router = useRouter()
   const params = useParams<{ connectionId: string }>()
-  const [mounted, setMounted] = useState(false)
+  const isReady = useRequireAuth()
   const { selectedConversationId, setSelectedConversationId } =
     useConversationStore()
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- client-mount detection for hydration safety
-    setMounted(true)
-  }, [])
-
-  useEffect(() => {
-    if (mounted && !getToken()) router.replace("/login")
-  }, [router, mounted])
 
   useEffect(() => {
     return () => {
@@ -31,16 +21,13 @@ export default function ConnectionPage() {
     }
   }, [])
 
-  if (!mounted) {
+  if (!isReady) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
         <Loader2 size={20} className="animate-spin text-muted-foreground" />
       </div>
     )
   }
-
-  const token = getToken()
-  if (!token) return null
 
   return (
     <div className="flex h-screen flex-col bg-background">
