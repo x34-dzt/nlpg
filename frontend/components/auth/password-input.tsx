@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { Eye, EyeOff } from "lucide-react"
+import { ViewIcon, ViewOffIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { Input } from "@/components/ui/input"
 
 export function PasswordInput({
@@ -39,7 +40,11 @@ export function PasswordInput({
         onClick={() => setShowPassword(!showPassword)}
         className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground hover:text-foreground"
       >
-        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+        {showPassword ? (
+          <HugeiconsIcon icon={ViewOffIcon} strokeWidth={2} size={16} />
+        ) : (
+          <HugeiconsIcon icon={ViewIcon} strokeWidth={2} size={16} />
+        )}
       </button>
     </div>
   )
