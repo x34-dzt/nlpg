@@ -73,6 +73,11 @@ class MessageService {
       conversationId,
     });
 
+    if (rows.length === 0) {
+      const titleText = content.slice(0, 255).replace(/\n/g, " ").trim();
+      await Chat.updateTitle(conversationId, titleText);
+    }
+
     const modelMessages = await convertToModelMessages(messages);
 
     const model = createModel({ apiKey });
