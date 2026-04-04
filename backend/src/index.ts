@@ -7,6 +7,8 @@ import { userRoutes } from "./domains/user/routes";
 import { connectionRoutes } from "./domains/connections/routes";
 import { conversationRoutes } from "./domains/conversations/routes";
 import { messageRoutes } from "./domains/conversations/messages/routes";
+import { widgetRoutes } from "./domains/widgets/routes";
+import { publicRoutes } from "./domains/public/routes";
 
 const port = Number(process.env.PORT) || 3000;
 const allowedOrigin = process.env.ALLOWED_ORIGIN ?? "http://localhost:3000";
@@ -40,7 +42,9 @@ function buildApp() {
     .use(userRoutes)
     .use(connectionRoutes)
     .use(conversationRoutes)
-    .use(messageRoutes);
+    .use(messageRoutes)
+    .use(widgetRoutes)
+    .use(publicRoutes);
 }
 
 const elysia = buildApp();

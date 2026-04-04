@@ -1,7 +1,18 @@
 import { JWT } from "~/lib/jwt";
 import { User } from "@db/user/user";
+import { Connection } from "@db/connections/connections";
+import { createId } from "@db/id";
 import { ConflictError, NotFoundError, UnauthorizedError } from "~/lib/error";
 import type { AuthResponse } from "./model";
+
+const DEMO_CONNECTION = {
+  host: "localhost",
+  port: 5432,
+  database: "demo_store",
+  username: "postgres",
+  password: "",
+  ssl: false,
+};
 
 class UserService {
   static async register(body: {
@@ -24,6 +35,17 @@ class UserService {
       throw new ConflictError("Failed to create user");
     }
 
+    try {
+      await Connection.create({
+        id: createId("connection"),
+        userId: user.id,
+        displayName: "Demo Store",
+        ...DEMO_CONNECTION,
+      });
+    } catch {
+      // Demo connection is optional; registration should still succeed
+    }
+
     const token = JWT.signToken({ sub: user.id });
 
     return {
@@ -44,7 +66,7 @@ class UserService {
     const hashToVerify = user.password;
     const isValid = await Bun.password.verify(body.password, hashToVerify);
 
-    if (!user || !isValid) {
+    if (!isValid) {
       throw new UnauthorizedError("Invalid credentials");
     }
 
