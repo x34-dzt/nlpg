@@ -19,7 +19,8 @@ import {
 } from "@/components/ui/dialog"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Field, FieldGroup } from "@/components/ui/field"
-import { Plus } from "lucide-react"
+import { PlusSignIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { toast } from "sonner"
 
 export function AddConnectionDialog() {
@@ -65,7 +66,7 @@ export function AddConnectionDialog() {
     )
   }
 
-  function updateField(key: string, value: string | boolean) {
+  function updateField(key: keyof typeof form, value: string | boolean) {
     setForm((prev) => ({ ...prev, [key]: value }))
   }
 
@@ -73,7 +74,7 @@ export function AddConnectionDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size="sm" className="gap-1.5">
-          <Plus size={14} />
+          <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} size={14} />
           New
         </Button>
       </DialogTrigger>

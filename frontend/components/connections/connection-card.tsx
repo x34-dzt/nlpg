@@ -15,13 +15,14 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useDeleteConnection, useConnectionHealth } from "@/hooks/connections"
 import {
-  Database,
-  Clock,
-  MoreVertical,
-  Trash2,
-  Heart,
-  Loader2,
-} from "lucide-react"
+  DatabaseIcon,
+  Clock01Icon,
+  MoreVerticalIcon,
+  Delete02Icon,
+  FavouriteIcon,
+  Loading03Icon,
+} from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { toast } from "sonner"
 
 export function ConnectionCard({ connection }: { connection: Connection }) {
@@ -59,9 +60,17 @@ export function ConnectionCard({ connection }: { connection: Connection }) {
     <Card className="group relative overflow-hidden transition-all duration-200 hover:border-primary/40 hover:shadow-md hover:shadow-black/20">
       <CardContent className="px-4">
         <div className="mb-3 flex items-center justify-between">
-          <Link href={`/${connection.id}`} className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-secondary/10 group-hover:bg-primary/10">
-              <Database size={14} className="text-primary" />
+          <Link
+            href={`/connection/${connection.id}`}
+            className="flex items-center gap-2"
+          >
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-secondary/10 group-hover:bg-primary/10">
+              <HugeiconsIcon
+                icon={DatabaseIcon}
+                strokeWidth={2}
+                size={14}
+                className="text-primary"
+              />
             </div>
             <span className="text-sm font-semibold">
               {connection.displayName}
@@ -75,12 +84,21 @@ export function ConnectionCard({ connection }: { connection: Connection }) {
                   e.preventDefault()
                   e.stopPropagation()
                 }}
-                className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:bg-accent"
+                className="flex h-6 w-6 items-center justify-center rounded-lg text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:bg-accent"
               >
                 {isDeleting ? (
-                  <Loader2 size={14} className="animate-spin" />
+                  <HugeiconsIcon
+                    icon={Loading03Icon}
+                    strokeWidth={2}
+                    size={14}
+                    className="animate-spin"
+                  />
                 ) : (
-                  <MoreVertical size={14} />
+                  <HugeiconsIcon
+                    icon={MoreVerticalIcon}
+                    strokeWidth={2}
+                    size={14}
+                  />
                 )}
               </button>
             </DropdownMenuTrigger>
@@ -89,7 +107,12 @@ export function ConnectionCard({ connection }: { connection: Connection }) {
                 onClick={handleHealthCheck}
                 disabled={isChecking}
               >
-                <Heart size={13} className="mr-2" />
+                <HugeiconsIcon
+                  icon={FavouriteIcon}
+                  strokeWidth={2}
+                  size={13}
+                  className="mr-2"
+                />
                 {isChecking ? "Checking..." : "Health Check"}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -98,14 +121,19 @@ export function ConnectionCard({ connection }: { connection: Connection }) {
                 disabled={isDeleting}
                 className="text-destructive focus:text-destructive"
               >
-                <Trash2 size={13} className="mr-2" />
+                <HugeiconsIcon
+                  icon={Delete02Icon}
+                  strokeWidth={2}
+                  size={13}
+                  className="mr-2"
+                />
                 {isDeleting ? "Deleting..." : "Delete"}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
 
-        <Link href={`/${connection.id}`}>
+        <Link href={`/connection/${connection.id}`}>
           <div className="mb-3 space-y-0.5 rounded-md px-0 py-2 font-mono text-xs text-muted-foreground">
             <p className="font-medium text-foreground/70">
               {connection.host}:{connection.port}
@@ -116,13 +144,13 @@ export function ConnectionCard({ connection }: { connection: Connection }) {
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <Clock size={11} />
+              <HugeiconsIcon icon={Clock01Icon} strokeWidth={2} size={11} />
               <span>
                 {" "}
                 {relativeTime(connection.lastUsedAt, "Not used yet")}
               </span>
             </div>
-            <Badge variant={"secondary"} className="h-5 px-1.5 text-[10px]">
+            <Badge variant={"secondary"} className="h-5 px-1.5 text-xs">
               {connection.ssl ? "SSL on" : "SSL off"}
             </Badge>
           </div>
