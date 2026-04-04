@@ -2,7 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/layout/theme-provider"
-import { Providers } from "@/components/layout/providers"
+import { QueryClientProviderWrapper } from "@/components/layout/query-client-provider"
 import { Toaster } from "sonner"
 import { cn } from "@/lib/utils"
 
@@ -31,10 +31,10 @@ export default function RootLayout({
     >
       <body>
         <ThemeProvider>
-          <Providers>
+          <QueryClientProviderWrapper>
             {children}
             <Toaster theme="system" />
-          </Providers>
+          </QueryClientProviderWrapper>
         </ThemeProvider>
       </body>
     </html>
