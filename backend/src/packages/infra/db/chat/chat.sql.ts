@@ -9,6 +9,7 @@ export const conversationTable = pgTable(
   "conversations",
   (pg) => ({
     ...baseColumns("conversation"),
+    title: pg.varchar({ length: 255 }),
     createdBy: pg
       .varchar({ length: 34 })
       .notNull()

@@ -82,6 +82,16 @@ export class Chat {
       .where(eq(conversationTable.id, conversationId));
   }
 
+  static async updateTitle(
+    conversationId: string,
+    title: string,
+  ): Promise<void> {
+    await db
+      .update(conversationTable)
+      .set({ title })
+      .where(eq(conversationTable.id, conversationId));
+  }
+
   static async findMessagesAsc(
     conversationId: string,
   ): Promise<MessageModel[]> {
