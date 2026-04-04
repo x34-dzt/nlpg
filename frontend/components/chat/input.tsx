@@ -1,45 +1,57 @@
 "use client"
 
-import { type FormEvent } from "react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Send } from "lucide-react"
+import { type KeyboardEvent, useCallback, useState } from "react"
+import { ArrowUp01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 
 interface ChatInputProps {
-  input: string
-  onInputChange: (value: string) => void
   onSubmit: (text: string) => void
   disabled: boolean
-  inputRef: React.RefObject<HTMLInputElement | null>
+  inputRef: React.RefObject<HTMLTextAreaElement | null>
 }
 
-export function ChatInput({
-  input,
-  onInputChange,
-  onSubmit,
-  disabled,
-  inputRef,
-}: ChatInputProps) {
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    if (!input.trim() || disabled) return
-    onSubmit(input)
-    onInputChange("")
-  }
+export function ChatInput({ onSubmit, disabled, inputRef }: ChatInputProps) {
+  const [input, setInput] = useState("")
+
+  const handleSubmit = useCallback(() => {
+    const trimmed = input.trim()
+    if (!trimmed || disabled) return
+    onSubmit(trimmed)
+    setInput("")
+  }, [input, disabled, onSubmit])
+
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLTextAreaElement>) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault()
+        handleSubmit()
+      }
+    },
+    [handleSubmit]
+  )
+
+  const canSend = input.trim().length > 0 && !disabled
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center gap-2">
-      <Input
+    <div className="relative rounded-3xl border border-border bg-input/50 transition-[border-color,box-shadow] focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/30">
+      <textarea
         ref={inputRef}
         value={input}
-        onChange={(e) => onInputChange(e.target.value)}
+        onChange={(e) => setInput(e.target.value)}
+        onKeyDown={handleKeyDown}
         placeholder="Ask about your database..."
         disabled={disabled}
-        className="flex-1 text-[13px]"
+        rows={1}
+        className="field-sizing-content max-h-32 min-h-0 w-full resize-none bg-transparent px-3.5 py-3 pr-10 text-sm leading-relaxed outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
       />
-      <Button type="submit" size="icon-sm" disabled={disabled || !input.trim()}>
-        <Send size={14} />
-      </Button>
-    </form>
+      <button
+        type="button"
+        disabled={!canSend}
+        onClick={handleSubmit}
+        className="absolute right-1.5 bottom-1.5 flex size-7 items-center justify-center rounded-full bg-foreground text-background transition-opacity disabled:pointer-events-none disabled:opacity-20"
+      >
+        <HugeiconsIcon icon={ArrowUp01Icon} size={14} strokeWidth={2.5} />
+      </button>
+    </div>
   )
 }
