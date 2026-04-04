@@ -1,6 +1,7 @@
 import {
   useInfiniteQuery,
   useMutation,
+  useQuery,
   useQueryClient,
 } from "@tanstack/react-query"
 import {
@@ -8,6 +9,10 @@ import {
   createConnection,
   deleteConnection,
   healthCheck,
+  getConnectionSchema,
+  shareDashboard,
+  unshareDashboard,
+  getConnection,
 } from "@/api/connections/"
 import type { CreateConnectionRequest } from "@/interfaces/connections"
 
@@ -44,5 +49,44 @@ export function useDeleteConnection() {
 export function useConnectionHealth() {
   return useMutation({
     mutationFn: (connectionId: string) => healthCheck(connectionId),
+  })
+}
+
+export function useSchema(connectionId: string) {
+  return useQuery({
+    queryKey: ["schema", connectionId],
+    queryFn: () => getConnectionSchema(connectionId),
+    staleTime: 1000 * 60 * 10,
+  })
+}
+
+export function useConnection(connectionId: string) {
+  return useQuery({
+    queryKey: ["connection", connectionId],
+    queryFn: () => getConnection(connectionId),
+  })
+}
+
+export function useShareDashboard() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (connectionId: string) => shareDashboard(connectionId),
+    onSuccess: (_, connectionId) => {
+      queryClient.invalidateQueries({
+        queryKey: ["connection", connectionId],
+      })
+    },
+  })
+}
+
+export function useUnshareDashboard() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (connectionId: string) => unshareDashboard(connectionId),
+    onSuccess: (_, connectionId) => {
+      queryClient.invalidateQueries({
+        queryKey: ["connection", connectionId],
+      })
+    },
   })
 }
