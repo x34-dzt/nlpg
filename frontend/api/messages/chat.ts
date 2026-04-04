@@ -1,5 +1,6 @@
 import { DefaultChatTransport } from "ai"
 import { getToken } from "@/lib/auth"
+import { getApiKey } from "@/lib/api-key"
 import { API_BASE_URL } from "@/api/client"
 
 export function createChatTransport(conversationId: string) {
@@ -7,7 +8,14 @@ export function createChatTransport(conversationId: string) {
     api: `${API_BASE_URL}/conversations/${conversationId}/messages/`,
     headers: () => {
       const token = getToken()
-      return { Authorization: `Bearer ${token ?? ""}` }
+      const apiKey = getApiKey()
+      const headers: Record<string, string> = {
+        Authorization: `Bearer ${token ?? ""}`,
+      }
+      if (apiKey) {
+        headers["X-AI-API-Key"] = apiKey
+      }
+      return headers
     },
     prepareSendMessagesRequest({ messages }) {
       const lastMessage = messages[messages.length - 1]
