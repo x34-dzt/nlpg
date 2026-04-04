@@ -72,6 +72,31 @@ export class Connection {
     return connection ?? null;
   }
 
+  static async findByShareToken(
+    token: string,
+  ): Promise<ConnectionModel | null> {
+    const [connection] = await db
+      .select()
+      .from(connectionTable)
+      .where(
+        and(
+          eq(connectionTable.shareToken, token),
+          isNull(connectionTable.deletedAt),
+        ),
+      );
+    return connection ?? null;
+  }
+
+  static async updateShareToken(
+    id: string,
+    token: string | null,
+  ): Promise<void> {
+    await db
+      .update(connectionTable)
+      .set({ shareToken: token })
+      .where(eq(connectionTable.id, id));
+  }
+
   static async softDelete(id: string): Promise<void> {
     await db
       .update(connectionTable)

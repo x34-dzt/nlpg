@@ -17,6 +17,7 @@ export const connectionTable = pgTable(
     username: pg.varchar({ length: 100 }).notNull(),
     password: pg.varchar({ length: 255 }).notNull(),
     ssl: pg.boolean().notNull().default(false),
+    shareToken: pg.varchar({ length: 34 }).unique(),
     lastUsedAt: pg.timestamp({ mode: "date", withTimezone: true }),
   }),
   (t) => [index("connections_user_id_idx").on(t.userId)],

@@ -36,6 +36,34 @@ export const healthResponseSchema = t.Object({
   message: t.Optional(t.String()),
 });
 
+export const schemaResponseSchema = t.Object({
+  tables: t.Array(
+    t.Object({
+      tableName: t.String(),
+      columns: t.Array(
+        t.Object({
+          columnName: t.String(),
+          dataType: t.String(),
+          isNullable: t.Boolean(),
+          columnDefault: t.Nullable(t.String()),
+        }),
+      ),
+    }),
+  ),
+  foreignKeys: t.Array(
+    t.Object({
+      fromTable: t.String(),
+      fromColumn: t.String(),
+      toTable: t.String(),
+      toColumn: t.String(),
+    }),
+  ),
+});
+
+export const shareResponseSchema = t.Object({
+  shareToken: t.String(),
+});
+
 export type CreateConnectionSchema = Static<typeof createConnectionSchema>;
 export type ConnectionResponse = Static<typeof connectionResponseSchema>;
 export type PaginationQuery = Static<typeof paginationQuerySchema>;

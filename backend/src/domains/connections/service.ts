@@ -1,5 +1,8 @@
 import { Connection } from "@db/connections/connections";
 import { connectionManager } from "~/packages/pool/connection-manager";
+import { schemaCache } from "~/packages/pool/schema-cache";
+import type { SchemaInfo } from "~/packages/pool/schema-cache";
+import { createId } from "@db/id";
 import { InternalServerError, NotFoundError } from "~/lib/error";
 import type {
   CreateConnectionSchema,
@@ -84,6 +87,42 @@ class ConnectionService {
 
     await Connection.softDelete(connectionId);
     await connectionManager.release(connectionId);
+  }
+
+  static async getSchema(
+    connectionId: string,
+    userId: string,
+  ): Promise<SchemaInfo> {
+    const connection = await Connection.findByIdAndUserId(connectionId, userId);
+    if (!connection) throw new NotFoundError("Connection not found");
+
+    const pool = await connectionManager.getPool(connectionId);
+    return schemaCache.getOrInspect(pool, connectionId);
+  }
+
+  static async share(
+    connectionId: string,
+    userId: string,
+  ): Promise<{ shareToken: string }> {
+    const connection = await Connection.findByIdAndUserId(connectionId, userId);
+    if (!connection) throw new NotFoundError("Connection not found");
+
+    if (connection.shareToken) {
+      return { shareToken: connection.shareToken };
+    }
+
+    const token = createId("share");
+    await Connection.updateShareToken(connectionId, token);
+    return { shareToken: token };
+  }
+
+  static async unshare(
+    connectionId: string,
+    userId: string,
+  ): Promise<void> {
+    const connection = await Connection.findByIdAndUserId(connectionId, userId);
+    if (!connection) throw new NotFoundError("Connection not found");
+    await Connection.updateShareToken(connectionId, null);
   }
 }
 

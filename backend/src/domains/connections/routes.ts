@@ -7,6 +7,8 @@ import {
   connectionResponseSchema,
   paginatedConnectionResponseSchema,
   healthResponseSchema,
+  schemaResponseSchema,
+  shareResponseSchema,
 } from "./model";
 import { HttpStatus } from "~/lib/http";
 
@@ -64,6 +66,37 @@ export const connectionRoutes = new Elysia({
       response: {
         [HttpStatus.HTTP_200_OK]: healthResponseSchema,
       },
+    },
+  )
+  .get(
+    "/:connectionId/schema",
+    async ({ params, user, service }) =>
+      service.connection.getSchema(params.connectionId, user.id),
+    {
+      useConnectionGuard: true,
+      response: {
+        [HttpStatus.HTTP_200_OK]: schemaResponseSchema,
+      },
+    },
+  )
+  .post(
+    "/:connectionId/share",
+    async ({ params, user, service }) =>
+      service.connection.share(params.connectionId, user.id),
+    {
+      useConnectionGuard: true,
+      response: {
+        [HttpStatus.HTTP_200_OK]: shareResponseSchema,
+      },
+    },
+  )
+  .delete(
+    "/:connectionId/share",
+    async ({ params, user, service }) => {
+      await service.connection.unshare(params.connectionId, user.id);
+    },
+    {
+      useConnectionGuard: true,
     },
   )
   .delete(
