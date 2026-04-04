@@ -9,3 +9,8 @@ export function relativeTime(date: string | null, fallback = "Never"): string {
   const days = Math.floor(hours / 24)
   return `${days}d ago`
 }
+
+export function formatDuration(ms: number): string {
+  if (ms < 1000) return `${ms}ms`
+  return `${(ms / 1000).toFixed(1)}s`
+}
