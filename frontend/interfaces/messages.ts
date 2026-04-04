@@ -8,5 +8,3 @@ export interface MessageRow {
   content: UIMessage["parts"]
   conversationId: string
 }
-
-export { mapToUIMessages } from "@/lib/messages"
