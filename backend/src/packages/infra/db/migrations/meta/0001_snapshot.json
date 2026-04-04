@@ -1,6 +1,6 @@
 {
-  "id": "376f778c-2239-4b83-9bbc-20901f87fbf8",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "ccc31418-c901-466e-b309-24b83a16151b",
+  "prevId": "376f778c-2239-4b83-9bbc-20901f87fbf8",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -294,6 +294,12 @@
           "notNull": true,
           "default": false
         },
+        "share_token": {
+          "name": "share_token",
+          "type": "varchar(34)",
+          "primaryKey": false,
+          "notNull": false
+        },
         "last_used_at": {
           "name": "last_used_at",
           "type": "timestamp with time zone",
@@ -334,7 +340,15 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "connections_shareToken_unique": {
+          "name": "connections_shareToken_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "share_token"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false

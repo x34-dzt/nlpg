@@ -5,6 +5,8 @@ export const type = {
   connection: "cnct",
   conversation: "conn",
   message: "msg",
+  widget: "wdgt",
+  share: "shr",
 } as const;
 
 export const createId = (idType: keyof typeof type) =>
