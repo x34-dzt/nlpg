@@ -88,10 +88,19 @@ class MessageService {
       messages: modelMessages,
       tools: { execute_sql: createExecuteSqlTool(pool) },
       stopWhen: stepCountIs(10),
+      onError: ({ error }) => {
+        console.error(`[Chat] Stream error for ${conversationId}:`, error);
+      },
     });
 
     return result.toUIMessageStreamResponse({
       originalMessages: messages,
+      onError: (error) => {
+        if (error == null) return "An error occurred. Please try again.";
+        if (typeof error === "string") return error;
+        if (error instanceof Error) return error.message;
+        return "An error occurred. Please try again.";
+      },
       onFinish: ({ messages: updatedMessages }) => {
         (async () => {
           try {
