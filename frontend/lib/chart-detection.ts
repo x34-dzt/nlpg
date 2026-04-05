@@ -72,7 +72,7 @@ export function detectChartType(result: SqlResult): ChartType {
 
   if (stringCols.length === 1 && numericCols.length >= 1) {
     const categories = stringCols[0]
-    if (categories.uniqueValues <= 8 && numericCols.length <= 3) {
+    if (categories.uniqueValues <= 3 && numericCols.length === 1) {
       return "pie"
     }
     return "bar"
