@@ -19,11 +19,11 @@ export function useConversations(connectionId: string) {
   })
 }
 
-export function useCreateConversation(connectionId: string) {
+export function useCreateConversation() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: () => createConversation(connectionId),
-    onSuccess: () => {
+    mutationFn: (connectionId: string) => createConversation(connectionId),
+    onSuccess: (_data, connectionId) => {
       queryClient.invalidateQueries({
         queryKey: ["conversations", connectionId],
       })

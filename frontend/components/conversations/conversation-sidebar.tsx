@@ -56,14 +56,14 @@ export const ConversationSidebar = memo(function ConversationSidebar({
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useConversations(connectionId)
   const { mutate: create, isPending: isCreating } =
-    useCreateConversation(connectionId)
+    useCreateConversation()
   const { mutate: deleteConv } = useDeleteConversation(connectionId)
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
   const conversations = data?.pages.flatMap((p) => p.items) ?? []
 
   const handleCreate = useCallback(() => {
-    create(undefined, {
+    create(connectionId, {
       onSuccess: (conv) => {
         router.push(`/connection/${connectionId}/${conv.id}`)
       },
@@ -167,7 +167,7 @@ export const ConversationSidebar = memo(function ConversationSidebar({
             </p>
           </div>
         ) : (
-          <div className="px-1.5 pb-2">
+          <div className="px-2 pb-2">
             {conversations.map((conv) => {
               const isActive = activeConvId === conv.id
               return (
