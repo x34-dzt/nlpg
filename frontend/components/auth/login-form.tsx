@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { toast } from "sonner"
 import { useLogin, useRegister } from "@/hooks/auth"
+import { SparklesIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { AuthForm } from "@/components/auth/auth-form"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -25,7 +27,11 @@ export function LoginForm({ className }: { className?: string }) {
       },
       onError: (registerError) => {
         const msg = (registerError as AxiosError)?.response?.data
-          ? ((registerError as AxiosError).response!.data as { message?: string }).message
+          ? (
+              (registerError as AxiosError).response!.data as {
+                message?: string
+              }
+            ).message
           : undefined
         if (typeof msg === "string" && msg.includes("already exists")) {
           login(DEMO_CREDS, {
@@ -71,11 +77,12 @@ export function LoginForm({ className }: { className?: string }) {
       <Separator className="my-4" />
       <Button
         type="button"
-        variant="outline"
+        variant="secondary"
         className="w-full"
         disabled={isPending}
         onClick={handleDemoLogin}
       >
+        <HugeiconsIcon icon={SparklesIcon} className="text-primary" />
         Try as Demo
       </Button>
     </div>

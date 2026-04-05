@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import { User02Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { cn } from "@/lib/utils"
 import { extractErrorMessage } from "@/lib/api-error"
 import { Button } from "@/components/ui/button"
@@ -71,16 +73,25 @@ export function AuthForm({
           </div>
           <Field>
             <FieldLabel htmlFor="username">Username</FieldLabel>
-            <Input
-              id="username"
-              type="text"
-              placeholder={usernamePlaceholder}
-              required
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              minLength={3}
-              autoComplete="username"
-            />
+            <div className="relative">
+              <HugeiconsIcon
+                icon={User02Icon}
+                strokeWidth={2}
+                size={16}
+                className="absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
+              />
+              <Input
+                id="username"
+                type="text"
+                placeholder={usernamePlaceholder}
+                required
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                minLength={3}
+                autoComplete="username"
+                className="pl-10"
+              />
+            </div>
           </Field>
           <Field>
             <FieldLabel htmlFor="password">Password</FieldLabel>

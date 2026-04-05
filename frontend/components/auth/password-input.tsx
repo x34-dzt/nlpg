@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { ViewIcon, ViewOffIcon } from "@hugeicons/core-free-icons"
+import { LockKeyIcon, ViewIcon, ViewOffIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Input } from "@/components/ui/input"
 
@@ -24,6 +24,12 @@ export function PasswordInput({
 
   return (
     <div className="relative">
+      <HugeiconsIcon
+        icon={LockKeyIcon}
+        strokeWidth={2}
+        size={16}
+        className="absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
+      />
       <Input
         id={id}
         type={showPassword ? "text" : "password"}
@@ -33,7 +39,7 @@ export function PasswordInput({
         onChange={(e) => onChange(e.target.value)}
         minLength={minLength}
         autoComplete={autoComplete}
-        className="pr-10"
+        className="pr-10 pl-10"
       />
       <button
         type="button"
