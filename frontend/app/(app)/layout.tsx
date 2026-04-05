@@ -3,7 +3,7 @@ import { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "NLP-PG",
-  description: "Natural language as a service for postgres",
+  description: "NLaaS for postgres",
 }
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
