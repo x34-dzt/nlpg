@@ -43,7 +43,6 @@ class ConnectionManager {
         `[Pool] Error for connection ${connectionId}:`,
         err.message,
       );
-      throw new Error("failed to create the pool connection");
     });
 
     const client = await pool.connect();
