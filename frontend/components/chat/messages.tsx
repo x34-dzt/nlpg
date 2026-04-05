@@ -35,7 +35,7 @@ const ChatMessage = memo(function ChatMessage({ msg }: { msg: UIMessage }) {
       <div className="flex justify-end">
         <div className="max-w-[85%]">
           <div className="rounded-3xl rounded-br-lg bg-secondary px-3.5 py-2.5">
-            <p className="text-sm leading-relaxed whitespace-pre-wrap text-secondary-foreground">
+            <p className="text-base leading-relaxed whitespace-pre-wrap text-secondary-foreground">
               {msg.parts
                 .filter((p) => p.type === "text")
                 .map((p) => (p as { type: "text"; text: string }).text)
@@ -186,36 +186,40 @@ export const ChatMessages = memo(function ChatMessages({
       ref={scrollRef}
       className="min-h-0 flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
     >
-      {messages.length === 0 ? (
-        <div className="flex h-full min-h-75 flex-col items-center justify-center px-6">
-          <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
-            <HugeiconsIcon
-              icon={Chat01Icon}
-              strokeWidth={2}
-              size={20}
-              className="text-primary"
-            />
-          </div>
-          <p className="mt-3 text-sm font-medium text-foreground">
-            Ask anything about your database
-          </p>
-          <p className="mt-1 text-center text-xs text-muted-foreground">
-            Query tables, explore schemas, or analyze data.
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-1 px-4 py-4">
-          {messages.map((msg) => (
-            <ChatMessage key={msg.id} msg={msg} />
-          ))}
-          {status === "submitted" && (
-            <div className="flex items-center gap-2 py-1">
-              <TypingDots />
-              <span className="text-xs text-muted-foreground">Sending...</span>
+      <div className="mx-auto max-w-3xl">
+        {messages.length === 0 ? (
+          <div className="flex h-full min-h-75 flex-col items-center justify-center px-6">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
+              <HugeiconsIcon
+                icon={Chat01Icon}
+                strokeWidth={2}
+                size={20}
+                className="text-primary"
+              />
             </div>
-          )}
-        </div>
-      )}
+            <p className="mt-3 text-sm font-medium text-foreground">
+              Ask anything about your database
+            </p>
+            <p className="mt-1 text-center text-xs text-muted-foreground">
+              Query tables, explore schemas, or analyze data.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-1 px-4 py-4">
+            {messages.map((msg) => (
+              <ChatMessage key={msg.id} msg={msg} />
+            ))}
+            {status === "submitted" && (
+              <div className="flex items-center gap-2 py-1">
+                <TypingDots />
+                <span className="text-xs text-muted-foreground">
+                  Sending...
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   )
 })

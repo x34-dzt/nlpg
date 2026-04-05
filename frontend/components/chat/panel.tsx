@@ -30,7 +30,7 @@ function ChatInner({
   )
   const hasInvalidatedTitle = useRef(false)
 
-  const { messages, sendMessage, status } = useChat({
+  const { messages, sendMessage, status, error, clearError } = useChat({
     id: conversationId,
     messages: initialMessages,
     transport,
@@ -43,6 +43,9 @@ function ChatInner({
         })
         hasInvalidatedTitle.current = true
       }
+    },
+    onError: (err) => {
+      console.error("[Chat] Error:", err)
     },
   })
 
@@ -61,9 +64,20 @@ function ChatInner({
   const isDisabled = status !== "ready"
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="mx-auto flex h-full flex-col">
       <ChatMessages messages={messages} status={status} scrollRef={scrollRef} />
-      <div className="border-t border-border px-4 py-3">
+      {error && (
+        <div className="flex items-center justify-between px-4 py-2 text-sm text-destructive">
+          <span>Something went wrong. Please try again.</span>
+          <button
+            onClick={clearError}
+            className="text-xs underline underline-offset-2 hover:text-destructive/80"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+      <div className="px-4 py-3">
         <ChatInput
           onSubmit={handleSubmit}
           disabled={isDisabled}

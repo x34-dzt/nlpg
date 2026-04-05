@@ -33,7 +33,7 @@ export function ChatInput({ onSubmit, disabled, inputRef }: ChatInputProps) {
   const canSend = input.trim().length > 0 && !disabled
 
   return (
-    <div className="relative rounded-3xl border border-border bg-input/50 transition-[border-color,box-shadow] focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/30">
+    <div className="relative mx-auto max-w-3xl rounded-3xl border border-border bg-input/50 transition-[border-color,box-shadow] focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/30">
       <textarea
         ref={inputRef}
         value={input}
@@ -41,8 +41,8 @@ export function ChatInput({ onSubmit, disabled, inputRef }: ChatInputProps) {
         onKeyDown={handleKeyDown}
         placeholder="Ask about your database..."
         disabled={disabled}
-        rows={1}
-        className="field-sizing-content max-h-32 min-h-0 w-full resize-none bg-transparent px-3.5 py-3 pr-10 text-sm leading-relaxed outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+        rows={3}
+        className="mx-auto field-sizing-content max-h-32 min-h-20 w-full resize-none bg-transparent px-3.5 py-3 pr-10 text-sm leading-relaxed outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
       />
       <button
         type="button"

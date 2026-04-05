@@ -56,7 +56,7 @@ export function ApiKeyDialog() {
           API Key
         </Button>
       </DialogTrigger>
-      <DialogContent showCloseButton>
+      <DialogContent>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <HugeiconsIcon
@@ -67,14 +67,14 @@ export function ApiKeyDialog() {
             API Key
           </DialogTitle>
           <DialogDescription>
-            Provide your own OpenRouter API key to use a better model. Without
+            Provide your Google Generative AI API key to use Gemini. Without
             this, the free default model is used.
           </DialogDescription>
         </DialogHeader>
         <Input
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder="sk-or-..."
+          placeholder="AIza..."
           type="password"
           className="text-sm"
         />
