@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query"
-import { register as registerApi } from "@/api/auth/register"
+import { register as registerApi } from "@/services/auth/register"
 import { setToken, setUser } from "@/lib/auth"
 import type { RegisterRequest, RegisterResponse } from "@/interfaces/auth"
 

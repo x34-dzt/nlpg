@@ -7,7 +7,7 @@ import {
   listConversations,
   createConversation,
   deleteConversation,
-} from "@/api/conversations"
+} from "@/services/conversations"
 
 export function useConversations(connectionId: string) {
   return useInfiniteQuery({

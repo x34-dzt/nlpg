@@ -1,5 +1,5 @@
 import type { Widget, UpdateWidgetRequest } from "@/interfaces/widgets"
-import api from "@/api/client"
+import api from "@/services/client"
 
 export async function updateWidget(
   connectionId: string,

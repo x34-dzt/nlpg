@@ -1,7 +1,7 @@
 import { DefaultChatTransport } from "ai"
 import { getToken } from "@/lib/auth"
 import { getApiKey } from "@/lib/api-key"
-import { API_BASE_URL } from "@/api/client"
+import { API_BASE_URL } from "@/services/client"
 
 export function createChatTransport(conversationId: string) {
   return new DefaultChatTransport({

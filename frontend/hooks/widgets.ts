@@ -6,7 +6,7 @@ import {
   deleteWidget,
   updateLayouts,
   executeWidgets,
-} from "@/api/widgets/"
+} from "@/services/widgets/"
 import type {
   CreateWidgetRequest,
   UpdateWidgetRequest,

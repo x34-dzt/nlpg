@@ -13,7 +13,7 @@ import {
   shareDashboard,
   unshareDashboard,
   getConnection,
-} from "@/api/connections/"
+} from "@/services/connections/"
 import type { CreateConnectionRequest } from "@/interfaces/connections"
 
 export function useConnections(search?: string) {

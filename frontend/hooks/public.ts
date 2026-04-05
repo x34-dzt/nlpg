@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { getPublicDashboard } from "@/api/public"
+import { getPublicDashboard } from "@/services/public"
 
 export function usePublicDashboard(token: string) {
   return useQuery({

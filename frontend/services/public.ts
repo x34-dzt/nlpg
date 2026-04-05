@@ -1,4 +1,4 @@
-import api from "@/api/client"
+import api from "@/services/client"
 import type { PublicDashboard } from "@/interfaces/connections"
 
 export async function getPublicDashboard(

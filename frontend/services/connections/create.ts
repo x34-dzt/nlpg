@@ -1,5 +1,5 @@
 import { CreateConnectionRequest, Connection } from "@/interfaces/connections"
-import api from "@/api/client"
+import api from "@/services/client"
 
 export async function createConnection(
   data: CreateConnectionRequest

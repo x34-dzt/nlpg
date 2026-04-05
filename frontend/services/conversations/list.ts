@@ -1,6 +1,6 @@
 import { PaginatedResponse } from "@/interfaces/pagination"
 import { Conversation } from "@/interfaces/conversations"
-import api from "@/api/client"
+import api from "@/services/client"
 
 export async function listConversations(
   connectionId: string,

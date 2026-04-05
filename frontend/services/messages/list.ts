@@ -1,6 +1,6 @@
 import { PaginatedResponse } from "@/interfaces/pagination"
 import { MessageRow } from "@/interfaces/messages"
-import api from "@/api/client"
+import api from "@/services/client"
 
 export async function getMessages(
   conversationId: string,

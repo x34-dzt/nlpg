@@ -1,4 +1,4 @@
-import api from "@/api/client"
+import api from "@/services/client"
 import type { RegisterRequest, RegisterResponse } from "@/interfaces/auth"
 
 export async function register(

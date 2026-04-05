@@ -1,4 +1,4 @@
-import api from "@/api/client"
+import api from "@/services/client"
 import type { LoginRequest, LoginResponse } from "@/interfaces/auth"
 
 export async function login(data: LoginRequest): Promise<LoginResponse> {
