@@ -56,7 +56,7 @@ export const QueryResultCard = memo(function QueryResultCard({
 
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-background">
-      <div className="flex items-center gap-2 border-b border-border/60 bg-muted/30 px-3 py-2">
+      <div className="flex flex-wrap items-center gap-2 border-b border-border/60 bg-muted/30 px-3 py-2">
         <HugeiconsIcon
           icon={DatabaseIcon}
           strokeWidth={2}
@@ -102,7 +102,7 @@ export const QueryResultCard = memo(function QueryResultCard({
       </div>
 
       <Tabs defaultValue={showChart ? "chart" : "data"} className="w-full">
-        <div className="flex items-center justify-between border-b border-border/40 px-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/40 px-3">
           <TabsList variant="line" className="h-8">
             <TabsTrigger value="chart" className="text-xs">
               Chart

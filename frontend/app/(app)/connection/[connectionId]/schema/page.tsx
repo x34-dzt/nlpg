@@ -54,7 +54,7 @@ export default function SchemaPage() {
   if (!data) return null
 
   return (
-    <div className="h-full overflow-auto p-6">
+    <div className="h-full overflow-auto">
       <SchemaView schema={data} />
     </div>
   )

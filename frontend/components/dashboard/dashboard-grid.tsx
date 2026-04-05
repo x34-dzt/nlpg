@@ -25,7 +25,7 @@ function toLayoutItem(w: Widget): LayoutItem {
 }
 
 function toResponsiveLayouts(items: LayoutItem[]): ResponsiveLayouts {
-  return { lg: items, md: items, sm: items }
+  return { lg: items, md: items, sm: items, xs: items }
 }
 
 export function DashboardGrid({
@@ -86,8 +86,8 @@ export function DashboardGrid({
       {width > 0 && (
         <ResponsiveGridLayout
           width={width}
-          breakpoints={{ lg: 1200, md: 768, sm: 0 }}
-          cols={{ lg: 12, md: 8, sm: 4 }}
+          breakpoints={{ lg: 1200, md: 768, sm: 480, xs: 0 }}
+          cols={{ lg: 12, md: 8, sm: 6, xs: 1 }}
           layouts={layouts}
           rowHeight={80}
           compactor={verticalCompactor}

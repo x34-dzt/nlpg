@@ -44,7 +44,7 @@ function formatDefault(val: string | null): string | null {
 
 function getFkTarget(
   fromColumn: string,
-  foreignKeys: SchemaForeignKey[],
+  foreignKeys: SchemaForeignKey[]
 ): SchemaForeignKey | undefined {
   return foreignKeys.find((fk) => fk.fromColumn === fromColumn)
 }
@@ -84,15 +84,15 @@ function TableCard({
           return (
             <div
               key={col.columnName}
-              className="flex items-center gap-2 px-3 py-1.5 transition-colors hover:bg-muted/30"
+              className="flex flex-wrap items-center gap-x-2 gap-y-0.5 px-3 py-1.5 transition-colors hover:bg-muted/30"
             >
-              <span className="min-w-0 shrink-0 font-mono text-xs text-foreground/90">
+              <span className="min-w-0 truncate font-mono text-xs text-foreground/90">
                 {col.columnName}
               </span>
               <span
                 className={cn(
                   "shrink-0 text-[11px] font-medium tabular-nums",
-                  getTypeColor(col.dataType),
+                  getTypeColor(col.dataType)
                 )}
               >
                 {col.dataType}
@@ -136,7 +136,7 @@ export function SchemaView({ schema }: SchemaViewProps) {
 
   const totalColumns = useMemo(
     () => schema.tables.reduce((sum, t) => sum + t.columns.length, 0),
-    [schema.tables],
+    [schema.tables]
   )
 
   const filtered = useMemo(() => {
@@ -145,13 +145,13 @@ export function SchemaView({ schema }: SchemaViewProps) {
     return schema.tables.filter(
       (t) =>
         t.tableName.toLowerCase().includes(q) ||
-        t.columns.some((c) => c.columnName.toLowerCase().includes(q)),
+        t.columns.some((c) => c.columnName.toLowerCase().includes(q))
     )
   }, [schema.tables, search])
 
   return (
-    <div className="mx-auto max-w-5xl space-y-5 p-6">
-      <div className="flex items-center justify-between gap-4">
+    <div className="mx-auto max-w-5xl space-y-5 p-4 sm:p-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <div className="flex size-9 items-center justify-center rounded-xl bg-muted/60">
             <HugeiconsIcon
@@ -171,12 +171,12 @@ export function SchemaView({ schema }: SchemaViewProps) {
           </div>
         </div>
 
-        <div className="relative w-full max-w-xs">
+        <div className="relative w-full sm:max-w-xs">
           <HugeiconsIcon
             icon={Search01Icon}
             strokeWidth={2}
             size={14}
-            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+            className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
           />
           <Input
             placeholder="Filter tables..."
