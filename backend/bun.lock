@@ -19,7 +19,6 @@
         "lru-cache": "^11.2.7",
         "pg": "^8.20.0",
         "ulid": "^3.0.2",
-        "zhipu-ai-provider": "^0.3.0",
         "zod": "^4.3.6",
       },
       "devDependencies": {
@@ -272,8 +271,6 @@
     "xtend": ["xtend@4.0.2", "", {}, "sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ=="],
 
     "zhead": ["zhead@2.2.4", "", {}, "sha512-8F0OI5dpWIA5IGG5NHUg9staDwz/ZPxZtvGVf01j7vHqSyZ0raHY+78atOVxRqb73AotX22uV1pXt3gYSstGag=="],
-
-    "zhipu-ai-provider": ["zhipu-ai-provider@0.3.0", "", { "dependencies": { "@ai-sdk/provider": "^3.0.3", "@ai-sdk/provider-utils": "^4.0.6" } }, "sha512-KaA0APoGSJbuLO10QAC2tLX4mx4lVq7rDdl/023V3Wcnv9I57naVQ1EWEiOXklkM8tpEI20tbzHfhqL4JyK7nw=="],
 
     "zod": ["zod@4.3.6", "", {}, "sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg=="],
 
