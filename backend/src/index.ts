@@ -10,7 +10,7 @@ import { messageRoutes } from "./domains/conversations/messages/routes";
 import { widgetRoutes } from "./domains/widgets/routes";
 import { publicRoutes } from "./domains/public/routes";
 
-const port = Number(process.env.PORT) || 3000;
+const port = Number(process.env.PORT) || 3001;
 const allowedOrigin = process.env.ALLOWED_ORIGIN ?? "http://localhost:3000";
 
 function buildApp() {
