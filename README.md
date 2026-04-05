@@ -105,7 +105,7 @@ Click **"API Key"** in the sidebar footer to provide your own Google Generative 
 ### Setup
 
 ```bash
-git clone <repo-url> && cd nlpg
+git clone https://github.com/x34-dzt/nlpg.git && cd nlpg
 
 # Backend
 cd backend
