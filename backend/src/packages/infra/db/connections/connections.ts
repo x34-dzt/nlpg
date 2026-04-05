@@ -1,4 +1,4 @@
-import { db, eq, lt, desc, and, isNull } from "@db";
+import { db, eq, lt, desc, and, isNull, ilike } from "@db";
 import { connectionTable } from "./connections.sql";
 import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
 
@@ -22,6 +22,7 @@ export class Connection {
     userId: string,
     cursor: string | undefined,
     limit: number,
+    search?: string,
   ): Promise<ConnectionModel[]> {
     const conditions = [
       eq(connectionTable.userId, userId),
@@ -30,6 +31,10 @@ export class Connection {
 
     if (cursor) {
       conditions.push(lt(connectionTable.id, cursor));
+    }
+
+    if (search) {
+      conditions.push(ilike(connectionTable.displayName, `%${search}%`));
     }
 
     return db

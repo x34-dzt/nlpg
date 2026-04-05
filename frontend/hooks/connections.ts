@@ -16,10 +16,10 @@ import {
 } from "@/api/connections/"
 import type { CreateConnectionRequest } from "@/interfaces/connections"
 
-export function useConnections() {
+export function useConnections(search?: string) {
   return useInfiniteQuery({
-    queryKey: ["connections"],
-    queryFn: ({ pageParam }) => listConnections(pageParam, 20),
+    queryKey: ["connections", search],
+    queryFn: ({ pageParam }) => listConnections(pageParam, 20, search),
     getNextPageParam: (lastPage) =>
       lastPage.hasMore ? lastPage.nextCursor : undefined,
     initialPageParam: undefined as string | undefined,

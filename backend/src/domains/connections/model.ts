@@ -23,6 +23,7 @@ export const connectionResponseSchema = t.Omit(connectionSelectSchema, [
 export const paginationQuerySchema = t.Object({
   cursor: t.Optional(t.String()),
   limit: t.Optional(t.Number({ minimum: 1, maximum: 100 })),
+  search: t.Optional(t.String({ minLength: 1 })),
 });
 
 export const paginatedConnectionResponseSchema = t.Object({
