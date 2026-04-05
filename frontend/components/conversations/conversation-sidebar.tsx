@@ -32,6 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { toast } from "sonner"
+import { closeSidebar } from "@/stores/sidebar"
 
 interface ConversationSidebarProps {
   connectionId: string
@@ -51,12 +52,10 @@ export const ConversationSidebar = memo(function ConversationSidebar({
 
   const isDashboard = pathname.includes("dashboard")
   const isSchema = pathname.includes("schema")
-  const isChat = !isDashboard && !isSchema
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useConversations(connectionId)
-  const { mutate: create, isPending: isCreating } =
-    useCreateConversation()
+  const { mutate: create, isPending: isCreating } = useCreateConversation()
   const { mutate: deleteConv } = useDeleteConversation(connectionId)
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
@@ -66,6 +65,7 @@ export const ConversationSidebar = memo(function ConversationSidebar({
     create(connectionId, {
       onSuccess: (conv) => {
         router.push(`/connection/${connectionId}/${conv.id}`)
+        closeSidebar()
       },
       onError: (error) => {
         toast.error(extractErrorMessage(error))
@@ -84,18 +84,8 @@ export const ConversationSidebar = memo(function ConversationSidebar({
       <div className="mt-2 px-3 pb-2">
         <div className="flex h-8 items-center rounded-full bg-muted p-0.5">
           <Link
-            href={`/connection/${connectionId}`}
-            className={cn(
-              "flex flex-1 items-center justify-center gap-1 rounded-full py-1 text-sm font-medium transition-colors",
-              isChat
-                ? "bg-background text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
-            )}
-          >
-            Chat
-          </Link>
-          <Link
             href={`/connection/${connectionId}/dashboard`}
+            onClick={closeSidebar}
             className={cn(
               "flex flex-1 items-center justify-center gap-1 rounded-full py-1 text-sm font-medium transition-colors",
               isDashboard
@@ -107,6 +97,7 @@ export const ConversationSidebar = memo(function ConversationSidebar({
           </Link>
           <Link
             href={`/connection/${connectionId}/schema`}
+            onClick={closeSidebar}
             className={cn(
               "flex flex-1 items-center justify-center gap-1 rounded-full py-1 text-sm font-medium transition-colors",
               isSchema
@@ -173,6 +164,7 @@ export const ConversationSidebar = memo(function ConversationSidebar({
               return (
                 <Link
                   href={`/connection/${connectionId}/${conv.id}`}
+                  onClick={closeSidebar}
                   key={conv.id}
                   className={cn(
                     "group mb-0.5 flex w-full items-center rounded-lg px-2.5 py-1.5 text-left transition-colors",
