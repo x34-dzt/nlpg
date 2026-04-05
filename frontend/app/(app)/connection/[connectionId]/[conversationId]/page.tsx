@@ -8,7 +8,7 @@ export default async function ChatPanelPage({
   const { conversationId } = await params
 
   return (
-    <div className="mx-auto h-full max-w-2xl">
+    <div className="mx-auto h-full w-full">
       <ChatPanel conversationId={conversationId} />
     </div>
   )

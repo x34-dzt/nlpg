@@ -30,7 +30,7 @@ export function ScatterChartCard({
 }: ScatterChartCardProps) {
   return (
     <ChartContainer config={config} className="min-h-62.5 w-full">
-      <ScatterChart margin={{ top: 8, right: 8, bottom: 8, left: 8 }}>
+      <ScatterChart margin={{ top: 8, right: 8, bottom: 48, left: 8 }}>
         <CartesianGrid strokeDasharray="3 3" vertical={false} />
         <XAxis
           dataKey={xKey}
@@ -40,6 +40,9 @@ export function ScatterChartCard({
           tickMargin={8}
           fontSize={11}
           name={xKey}
+          angle={-35}
+          textAnchor="end"
+          interval={0}
         />
         <YAxis
           dataKey={yKey}

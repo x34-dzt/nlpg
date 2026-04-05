@@ -3,7 +3,6 @@
 import { useState } from "react"
 import Link from "next/link"
 import type { Connection } from "@/interfaces/connections"
-import { relativeTime } from "@/lib/time"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -16,7 +15,6 @@ import {
 import { useDeleteConnection, useConnectionHealth } from "@/hooks/connections"
 import {
   DatabaseIcon,
-  Clock01Icon,
   MoreVerticalIcon,
   Delete02Icon,
   FavouriteIcon,
@@ -57,7 +55,7 @@ export function ConnectionCard({ connection }: { connection: Connection }) {
   }
 
   return (
-    <Card className="group relative overflow-hidden transition-all duration-200 hover:border-primary/40 hover:shadow-md hover:shadow-black/20">
+    <Card className="group relative overflow-hidden py-4 transition-all duration-200 hover:border-primary/40 hover:shadow-md hover:shadow-black/20">
       <CardContent className="px-4">
         <div className="mb-3 flex items-center justify-between">
           <Link
@@ -142,18 +140,9 @@ export function ConnectionCard({ connection }: { connection: Connection }) {
             <p>{connection.username}</p>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <HugeiconsIcon icon={Clock01Icon} strokeWidth={2} size={11} />
-              <span>
-                {" "}
-                {relativeTime(connection.lastUsedAt, "Not used yet")}
-              </span>
-            </div>
-            <Badge variant={"secondary"} className="h-5 px-1.5 text-xs">
-              {connection.ssl ? "SSL on" : "SSL off"}
-            </Badge>
-          </div>
+          <Badge variant={"secondary"} className="h-5 px-1.5 text-xs">
+            {connection.ssl ? "SSL on" : "SSL off"}
+          </Badge>
         </Link>
       </CardContent>
     </Card>

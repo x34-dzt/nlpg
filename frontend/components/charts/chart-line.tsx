@@ -23,7 +23,7 @@ export function LineChartCard({
 }: LineChartCardProps) {
   return (
     <ChartContainer config={config} className="min-h-62.5 w-full">
-      <LineChart data={data} margin={{ top: 8, right: 8, bottom: 8, left: 8 }}>
+      <LineChart data={data} margin={{ top: 8, right: 8, bottom: 48, left: 8 }}>
         <CartesianGrid strokeDasharray="3 3" vertical={false} />
         <XAxis
           dataKey={labelKey}
@@ -31,6 +31,9 @@ export function LineChartCard({
           axisLine={false}
           tickMargin={8}
           fontSize={11}
+          angle={-35}
+          textAnchor="end"
+          interval={0}
         />
         <YAxis tickLine={false} axisLine={false} tickMargin={8} fontSize={11} />
         <ChartTooltip content={<ChartTooltipContent />} />

@@ -1,8 +1,7 @@
 "use client"
 
-import { useMemo } from "react"
 import { useRouter } from "next/navigation"
-import { removeToken, getUser } from "@/lib/auth"
+import { removeToken } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
 import { Logout01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
@@ -13,7 +12,6 @@ import { ThemeToggle } from "@/components/layout/theme-toggle"
 export function Navbar() {
   const router = useRouter()
   const queryClient = useQueryClient()
-  const user = useMemo(() => getUser(), [])
 
   function handleLogout() {
     removeToken()
@@ -25,18 +23,14 @@ export function Navbar() {
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-12 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-sm font-bold tracking-tighter">NLP-PG</span>
+          <span className="text-base font-semibold tracking-tighter">
+            NLP-PG
+          </span>
         </Link>
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-
           <div className="mx-1 h-4 w-px bg-border" />
-
-          <span className="hidden text-xs text-muted-foreground sm:inline">
-            {user?.username}
-          </span>
-
           <Button
             variant="ghost"
             size="icon"
