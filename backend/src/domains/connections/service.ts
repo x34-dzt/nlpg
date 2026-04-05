@@ -41,6 +41,7 @@ class ConnectionService {
       userId,
       query.cursor,
       limit,
+      query.search,
     );
 
     const hasMore = results.length > limit;
@@ -72,8 +73,11 @@ class ConnectionService {
     try {
       const pool = await connectionManager.getPool(connectionId);
       const client = await pool.connect();
-      await client.query("SELECT 1");
-      client.release();
+      try {
+        await client.query("SELECT 1");
+      } finally {
+        client.release();
+      }
       return { status: "ok" };
     } catch (err) {
       const message = err instanceof Error ? err.message : "Connection failed";

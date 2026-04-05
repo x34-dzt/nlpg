@@ -5,14 +5,34 @@ import { createId } from "@db/id";
 import { ConflictError, NotFoundError, UnauthorizedError } from "~/lib/error";
 import type { AuthResponse } from "./model";
 
-const DEMO_CONNECTION = {
-  host: "localhost",
-  port: 5432,
-  database: "demo_store",
-  username: "postgres",
-  password: "",
-  ssl: false,
-};
+function getDemoConnection() {
+  const demoUrl = process.env.DEMO_DB_URL;
+  if (demoUrl) {
+    try {
+      const url = new URL(demoUrl);
+      const isLocalhost =
+        url.hostname === "localhost" || url.hostname === "127.0.0.1";
+      return {
+        host: url.hostname,
+        port: parseInt(url.port, 10) || 5432,
+        database: url.pathname.replace(/^\//, ""),
+        username: decodeURIComponent(url.username),
+        password: decodeURIComponent(url.password),
+        ssl: isLocalhost ? false : true,
+      };
+    } catch {
+      // fall through to defaults
+    }
+  }
+  return {
+    host: "localhost",
+    port: 5432,
+    database: "demo_store",
+    username: "postgres",
+    password: "",
+    ssl: false,
+  };
+}
 
 class UserService {
   static async register(body: {
@@ -40,7 +60,7 @@ class UserService {
         id: createId("connection"),
         userId: user.id,
         displayName: "Demo Store",
-        ...DEMO_CONNECTION,
+        ...getDemoConnection(),
       });
     } catch {
       // Demo connection is optional; registration should still succeed
