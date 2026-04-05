@@ -1,4 +1,4 @@
-import { db, eq, lt, desc, asc, and, isNull } from "@db";
+import { db, eq, lt, gt, desc, asc, and, isNull } from "@db";
 import {
   conversationTable,
   messageTable,
@@ -67,12 +67,31 @@ export class Chat {
     content: unknown;
     conversationId: string;
   }): Promise<void> {
-    await db.insert(messageTable).values({
-      id: data.id,
-      role: data.role,
-      content: data.content,
-      conversationId: data.conversationId,
-    });
+    await db
+      .insert(messageTable)
+      .values({
+        id: data.id,
+        role: data.role,
+        content: data.content,
+        conversationId: data.conversationId,
+      })
+      .onConflictDoNothing();
+  }
+
+  static async deleteMessagesAfter(
+    conversationId: string,
+    messageId: string,
+  ): Promise<number> {
+    const result = await db
+      .delete(messageTable)
+      .where(
+        and(
+          eq(messageTable.conversationId, conversationId),
+          gt(messageTable.id, messageId),
+          isNull(messageTable.deletedAt),
+        ),
+      );
+    return result.rowCount ?? 0;
   }
 
   static async updateLastUsedAt(conversationId: string): Promise<void> {

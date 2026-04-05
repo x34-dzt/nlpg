@@ -7,6 +7,7 @@ const messageSelectSchema = createSelectSchema(messageTable);
 
 export const createMessageRequest = t.Object({
   content: t.String({ minLength: 1, maxLength: 10000 }),
+  clientMessageId: t.String({ minLength: 8, maxLength: 64 }),
 });
 
 export const paginationQuerySchema = t.Object({

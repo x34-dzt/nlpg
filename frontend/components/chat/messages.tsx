@@ -1,16 +1,21 @@
 "use client"
 
-import { memo, useLayoutEffect } from "react"
+import { memo, useLayoutEffect, useState, useCallback } from "react"
 import type { UIMessage } from "ai"
 import { isToolUIPart } from "ai"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import {
   Chat01Icon,
   TerminalIcon,
   Loading03Icon,
+  CopyIcon,
+  RepeatIcon,
+  Tick02Icon,
 } from "@hugeicons/core-free-icons"
+import { toast } from "sonner"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { QueryResultCard } from "@/components/charts/query-result"
 import type { SqlResult } from "@/lib/chart-detection"
@@ -27,7 +32,42 @@ function TypingDots() {
   )
 }
 
-const ChatMessage = memo(function ChatMessage({ msg }: { msg: UIMessage }) {
+function CopyMessageButton({ msg }: { msg: UIMessage }) {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = useCallback(() => {
+    const text = msg.parts
+      .filter((p) => p.type === "text")
+      .map((p) => (p as { type: "text"; text: string }).text)
+      .join("")
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true)
+      toast.success("Copied to clipboard")
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }, [msg])
+
+  return (
+    <Button variant="ghost" size="icon" className="size-7" onClick={handleCopy}>
+      <HugeiconsIcon
+        icon={copied ? Tick02Icon : CopyIcon}
+        strokeWidth={2}
+        size={14}
+        className={copied ? "text-emerald-600" : undefined}
+      />
+    </Button>
+  )
+}
+
+const ChatMessage = memo(function ChatMessage({
+  msg,
+  status,
+  onRegenerate,
+}: {
+  msg: UIMessage
+  status: string
+  onRegenerate: (messageId: string) => void
+}) {
   const isUser = msg.role === "user"
 
   if (isUser) {
@@ -159,6 +199,19 @@ const ChatMessage = memo(function ChatMessage({ msg }: { msg: UIMessage }) {
 
           return null
         })}
+        {msg.role === "assistant" && status === "ready" && (
+          <div className="flex items-center gap-1 pt-1">
+            <CopyMessageButton msg={msg} />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-7"
+              onClick={() => onRegenerate(msg.id)}
+            >
+              <HugeiconsIcon icon={RepeatIcon} strokeWidth={2} size={14} />
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )
@@ -168,12 +221,14 @@ interface ChatMessagesProps {
   messages: UIMessage[]
   status: string
   scrollRef: React.RefObject<HTMLDivElement | null>
+  onRegenerate: (messageId: string) => void
 }
 
 export const ChatMessages = memo(function ChatMessages({
   messages,
   status,
   scrollRef,
+  onRegenerate,
 }: ChatMessagesProps) {
   useLayoutEffect(() => {
     if (scrollRef.current) {
@@ -207,7 +262,12 @@ export const ChatMessages = memo(function ChatMessages({
         ) : (
           <div className="space-y-1 px-4 py-4">
             {messages.map((msg) => (
-              <ChatMessage key={msg.id} msg={msg} />
+              <ChatMessage
+                key={msg.id}
+                msg={msg}
+                status={status}
+                onRegenerate={onRegenerate}
+              />
             ))}
             {status === "submitted" && (
               <div className="flex items-center gap-2 py-1">

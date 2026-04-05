@@ -39,6 +39,7 @@ class MessageService {
   static async chat(
     conversation: ConversationModel,
     content: string,
+    clientMessageId: string,
     apiKey?: string,
   ) {
     const conversationId = conversation.id;
@@ -58,24 +59,32 @@ class MessageService {
       parts: row.content as UIMessage["parts"],
     }));
 
-    const userMessage: UIMessage = {
-      id: createId("message"),
-      role: "user",
-      parts: [{ type: "text", text: content }],
-    };
+    const existingIds = new Set(previousMessages.map((m) => m.id));
+    const isRegeneration = existingIds.has(clientMessageId);
 
-    const messages = [...previousMessages, userMessage];
+    let messages: UIMessage[];
 
-    await Chat.createMessage({
-      id: userMessage.id,
-      role: "user",
-      content: userMessage.parts,
-      conversationId,
-    });
+    if (isRegeneration) {
+      messages = [...previousMessages];
+    } else {
+      const userMessage: UIMessage = {
+        id: clientMessageId,
+        role: "user",
+        parts: [{ type: "text", text: content }],
+      };
+      messages = [...previousMessages, userMessage];
 
-    if (rows.length === 0) {
-      const titleText = content.slice(0, 255).replace(/\n/g, " ").trim();
-      await Chat.updateTitle(conversationId, titleText);
+      await Chat.createMessage({
+        id: userMessage.id,
+        role: "user",
+        content: userMessage.parts,
+        conversationId,
+      });
+
+      if (rows.length === 0) {
+        const titleText = content.slice(0, 255).replace(/\n/g, " ").trim();
+        await Chat.updateTitle(conversationId, titleText);
+      }
     }
 
     const modelMessages = await convertToModelMessages(messages);
@@ -101,16 +110,19 @@ class MessageService {
         if (error instanceof Error) return error.message;
         return "An error occurred. Please try again.";
       },
+      generateMessageId: () => createId("message"),
       onFinish: ({ messages: updatedMessages }) => {
         (async () => {
           try {
             const newMessages = updatedMessages.slice(
-              previousMessages.length + 1,
+              isRegeneration
+                ? previousMessages.length
+                : previousMessages.length + 1,
             );
             for (const msg of newMessages) {
               if (msg.role === "assistant") {
                 await Chat.createMessage({
-                  id: createId("message"),
+                  id: msg.id,
                   role: "assistant",
                   content: msg.parts,
                   conversationId,

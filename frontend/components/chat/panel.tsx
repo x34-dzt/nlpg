@@ -7,6 +7,9 @@ import type { UIMessage } from "ai"
 import { getMessages } from "@/services/messages/list"
 import { mapToUIMessages } from "@/lib/messages"
 import { createChatTransport } from "@/services/messages/chat"
+import { createId } from "@/lib/id"
+import { getToken } from "@/lib/auth"
+import { API_BASE_URL } from "@/services/client"
 import { ChatMessages } from "@/components/chat/messages"
 import { ChatInput } from "@/components/chat/input"
 import { Loading03Icon } from "@hugeicons/core-free-icons"
@@ -30,9 +33,10 @@ function ChatInner({
   )
   const hasInvalidatedTitle = useRef(false)
 
-  const { messages, sendMessage, status, error, clearError } = useChat({
+  const { messages, sendMessage, regenerate, status, error, clearError } = useChat({
     id: conversationId,
     messages: initialMessages,
+    generateId: () => createId("message"),
     transport,
     onFinish: () => {
       queryClient.setQueryData(["messages", conversationId], messages)
@@ -58,14 +62,40 @@ function ChatInner({
       if (!text.trim() || status !== "ready") return
       sendMessage({ text })
     },
-    [status, sendMessage]
+    [status, sendMessage],
+  )
+
+  const handleRegenerate = useCallback(
+    async (messageId: string) => {
+      const idx = messages.findIndex((m) => m.id === messageId)
+      if (idx < 1) return
+
+      const userMessage = messages[idx - 1]
+      if (userMessage.role !== "user") return
+
+      const res = await fetch(
+        `${API_BASE_URL}/conversations/${conversationId}/messages/after/${userMessage.id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${getToken() ?? ""}`,
+            "Content-Type": "application/json",
+          },
+        },
+      )
+
+      if (!res.ok) return
+
+      regenerate({ messageId })
+    },
+    [messages, conversationId, regenerate],
   )
 
   const isDisabled = status !== "ready"
 
   return (
     <div className="mx-auto flex h-full flex-col">
-      <ChatMessages messages={messages} status={status} scrollRef={scrollRef} />
+      <ChatMessages messages={messages} status={status} scrollRef={scrollRef} onRegenerate={handleRegenerate} />
       {error && (
         <div className="flex items-center justify-between px-4 py-2 text-sm text-destructive">
           <span>Something went wrong. Please try again.</span>

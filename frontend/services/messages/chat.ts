@@ -21,7 +21,10 @@ export function createChatTransport(conversationId: string) {
       const lastMessage = messages[messages.length - 1]
       const textPart = lastMessage.parts.find((p) => p.type === "text")
       return {
-        body: { content: textPart?.text ?? "" },
+        body: {
+          content: textPart?.text ?? "",
+          clientMessageId: lastMessage.id,
+        },
       }
     },
   })
